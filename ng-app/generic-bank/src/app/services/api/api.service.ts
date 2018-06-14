@@ -21,6 +21,7 @@ export class ApiService {
   getUTCTime(zone: string) {
     return this.httpRequest<timeResponse>(`${this.TIME_URL}?zone=${zone}`, 'GET').pipe(
       map(item => {
+        item.formatted = item.formatted.replace(/-/g, '/');
         item.date = new Date(item.formatted).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
         return item;
       })
@@ -67,7 +68,7 @@ export class ApiService {
   }
 
   private httpRequest<T>(url: string, method: string, options: any = {}): Observable<any> {
-    return this.http.request<T>(method, url, options).pipe(
+    return this.http.request<T>(method, this.PREFIX + url, options).pipe(
       catchError(err => {
         // console.log('ERROR HANDLER');
         throw new Error(err)
