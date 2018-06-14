@@ -65,7 +65,7 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command:
-            echo $GCLOUD_SERVICE_KEY | /scripts/gcloud_auth.sh
+            echo $GCLOUD_SERVICE_KEY_LIGHT | /scripts/gcloud_auth.sh
       - run:
           name: Update admin deployment on google cloud (if tufin.io cluster is up and running)
           command: |
