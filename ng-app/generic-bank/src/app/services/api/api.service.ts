@@ -68,7 +68,7 @@ export class ApiService {
   }
 
   private httpRequest<T>(url: string, method: string, options: any = {}): Observable<any> {
-    return this.http.request<T>(method, this.PREFIX + url, options).pipe(
+    return this.http.request<T>(method, url, options).pipe(
       catchError(err => {
         // console.log('ERROR HANDLER');
         throw new Error(err)

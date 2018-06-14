@@ -1,5 +1,5 @@
 <span [asyncProgress]="list$" (data)="onSuccess($event)" (error)="error = $event" (complete)="complete = $event"></span>
-<div class="row">
+<div class="row" *ngIf="!error">
   <div class="col-12">
     <table class="table table-hover text-left">
       <thead>
@@ -19,3 +19,7 @@
     </table>
   </div>
 </div>
+
+<progress-card text="There was an error fetching the accounts list!"
+               icon="exclamation"
+               bgColor="danger" *ngIf="!!error"></progress-card>
