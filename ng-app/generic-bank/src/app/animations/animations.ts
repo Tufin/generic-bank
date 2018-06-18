@@ -1,4 +1,4 @@
-import {animate, group, query, stagger, style, transition, trigger} from "@angular/animations";
+import {animate, group, query, stagger, state, style, transition, trigger} from "@angular/animations";
 
 const ANIMATION_DURATION = '0.3s';
 const ANIMATION_SHORT_DURATION = '0.2s';
@@ -21,17 +21,21 @@ const navigationOpacity = trigger('navigationOpacity', [
     ])
   ])
 ]);
-
-const opacityTransition = trigger('opacityTransition', [
-  transition(':enter', [
-    style({ opacity: '0' }),
-    animate(`${ANIMATION_DURATION} ${ANIMATION_TYPE}`, style({ opacity: '1'}))
-  ]),
-  transition(':leave', [
-    style({ opacity: '1', position: 'absolute', width: 'calc(100% - 30px)' }),
-    animate(`${ANIMATION_DURATION} ${ANIMATION_TYPE}`, style({ opacity: '0' }))
-  ])
-]);
+//
+// const opacityTransition = trigger('opacityTransition', [
+//   transition('* <=> *', [
+//     // query(':self, :enter', [
+//       query(':self:enter', [
+//         style({ opacity: '0' }),
+//         animate(`${ANIMATION_DURATION} ${ANIMATION_TYPE}`, style({ opacity: '1'}))
+//       ], { optional: true }),
+//       query(':self:leave', [
+//         style({ opacity: '1', position: 'absolute', width: 'calc(100% - 30px)' }),
+//         animate(`${ANIMATION_DURATION} ${ANIMATION_TYPE}`, style({ opacity: '0' }))
+//       ], { optional: true })
+//     ])
+//   // ])
+// ]);
 
 const routerTransition = trigger('routerTransition', [
   transition('* <=> *', [
@@ -69,4 +73,4 @@ const expandTransition = trigger('expandTransition', [
   ])
 ]);
 
-export default {opacityTransition, routerTransition, expandTransition, navigationOpacity};
+export default {routerTransition, expandTransition, navigationOpacity};

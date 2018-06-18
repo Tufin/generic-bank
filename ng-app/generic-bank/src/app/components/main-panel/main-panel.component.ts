@@ -9,7 +9,7 @@ import {isNullOrUndefined} from "util";
   selector: 'app-main-panel',
   templateUrl: './main-panel.component.html',
   styleUrls: ['./main-panel.component.less'],
-  animations: [animations.opacityTransition, animations.expandTransition]
+  animations: [ animations.expandTransition]
 })
 export class MainPanelComponent {
   private _showTime: boolean = false;
