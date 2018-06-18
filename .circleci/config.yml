@@ -16,7 +16,7 @@ jobs:
           command: |
             cd ng-app/generic-bank
             npm install
-            ng build
+            ng build --base-href=ui
 
       - persist_to_workspace:
           root: ng-app/generic-bank
