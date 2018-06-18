@@ -80,7 +80,7 @@ func getAngularApp(w http.ResponseWriter, r *http.Request) {
 }
 
 func angularRouteHandler(h http.Handler) http.Handler {
-	return http.StripPrefix("/ui/", h)
+	return http.StripPrefix("/ui", h)
 }
 
 func getRedisUrl() string {
