@@ -52,9 +52,11 @@ func main() {
 	}
 
 	// New angular application router
-	router.PathPrefix("/ui").Handler(angularRouteHandler(getAngularAssets("/boa/html/")))
-	//router.Handle("/ui/", angularRouteHandler(http.HandlerFunc(getAngularApp)))
+	router.PathPrefix("/admin").Handler(angularRouteHandler("/admin", getAngularAssets("/boa/html/")))
+	router.Handle("/admin/", angularRouteHandler("/admin", http.HandlerFunc(getAngularAdminApp)))
 
+	router.PathPrefix("/customer").Handler(angularRouteHandler("/customer", getAngularAssets("/boa/html/")))
+	router.Handle("/customer/", angularRouteHandler("/customer", http.HandlerFunc(getAngularCustomerApp)))
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -75,12 +77,16 @@ func getAngularAssets(path string) http.Handler {
 	return http.FileServer(http.Dir(path))
 }
 
-func getAngularApp(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "/boa/html/index.html")
+func getAngularCustomerApp(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "/boa/html/index.html/#/customer")
 }
 
-func angularRouteHandler(h http.Handler) http.Handler {
-	return http.StripPrefix("/ui", h)
+func getAngularAdminApp(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "/boa/html/index.html/#/admin")
+}
+
+func angularRouteHandler(path string, h http.Handler) http.Handler {
+	return http.StripPrefix(path, h)
 }
 
 func getRedisUrl() string {
