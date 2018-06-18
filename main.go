@@ -54,7 +54,7 @@ func main() {
 	//router.PathPrefix("/ui").Handler(http.StripPrefix("/ui"))
 	//router.HandleFunc("/ui", getAngularApp)
 
-	router.HandleFunc("/ui", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/ui/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "/boa/html/index.html")
 	})
 
