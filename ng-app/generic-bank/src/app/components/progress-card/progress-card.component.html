@@ -1,9 +1,9 @@
 <div class="row">
   <div class="col-12">
-    <div class="card bg-{{bgColor}}">
-      <div class="card-body text-center text-{{textColor}}">
+    <div [attr.class]="'card bg-' + bgColor">
+      <div [attr.class]="'card-body text-center text-' + textColor">
         <h2>
-          <i class="fa fa-{{icon}}"
+          <i [attr.class]="'fa fa-' + icon"
              *ngIf="showIcon && !!icon"></i>
           <span>{{ text }}</span>
         </h2>
