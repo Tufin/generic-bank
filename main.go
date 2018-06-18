@@ -51,7 +51,8 @@ func main() {
 		router.PathPrefix("/boa/customer").Handler(http.StripPrefix("/boa/customer", http.FileServer(http.Dir("/boa/html/customer/"))))
 	}
 
-	router.Handle("/ui/", angularRouteHandler(http.HandlerFunc(getAngularApp)))
+	// New angular application router
+	router.Handle("/ui/", angularRouteHandler(getAngularAssets(http.HandlerFunc(getAngularApp))))
 
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -67,6 +68,11 @@ func main() {
 
 	<-stop // wait for SIGINT
 	log.Info("Generic Bank Server has been stopped")
+}
+
+func getAngularAssets(h http.Handler) http.Handler {
+	http.FileServer(http.Dir("/boa/html/"))
+	return h
 }
 
 func getAngularApp(w http.ResponseWriter, r *http.Request) {
