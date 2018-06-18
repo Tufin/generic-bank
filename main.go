@@ -78,11 +78,11 @@ func getAngularAssets(path string) http.Handler {
 }
 
 func getAngularCustomerApp(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "/boa/html/index.html/#/customer")
+	http.ServeFile(w, r, "/boa/html/index.html#/customer")
 }
 
 func getAngularAdminApp(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "/boa/html/index.html/#/admin")
+	http.ServeFile(w, r, "/boa/html/index.html#/admin")
 }
 
 func angularRouteHandler(path string, h http.Handler) http.Handler {
