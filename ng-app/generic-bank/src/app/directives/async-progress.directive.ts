@@ -22,18 +22,18 @@ export class AsyncProgressDirective implements OnDestroy{
 
       this._subscription = obs.pipe(skip(this.skipFirstValues)).subscribe(
         (data) => {
-          console.log('data', data);
+          // console.log('data', data);
           this.data.emit(data);
           // this.emitChanges(data, null, false);
         },
         err => {
-          console.log('err', err);
+          // console.log('err', err);
           this.error.emit(err);
 
           // this.emitChanges(null, err, true);
         },
         () => {
-          console.log('completed');
+          // console.log('completed');
           this.complete.emit(true);
 
           // this.emitChanges(null, null, true)

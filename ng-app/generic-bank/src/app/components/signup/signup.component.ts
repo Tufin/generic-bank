@@ -33,6 +33,6 @@ export class SignupComponent {
 
     const id = accountRegex.exec(data)[1];
 
-    this.router.navigate(['/thanks', id]);
+    this.router.navigate(['/customer/thanks', id]);
   }
 }

@@ -20,16 +20,16 @@ import { AccountsListComponent } from './components/accounts-list/accounts-list.
 
 const appRoutes: Routes = [
   {
-    path: 'home',
+    path: 'customer',
     component: HomeComponent,
     data: {
       title: 'Welcome to Generic Bank’s Customer Portal',
       showBack: false,
-      // showTime: true
+      showTime: true
     }
   },
   {
-    path: 'signup',
+    path: 'customer/signup',
     component: SignupComponent,
     data: {
       title: 'Open an account',
@@ -37,7 +37,7 @@ const appRoutes: Routes = [
     }
   },
   {
-    path: 'thanks/:id',
+    path: 'customer/thanks/:id',
     component: AccountCreatedComponent,
     data: {
       title: 'Thank you for choosing us as your bank',
@@ -45,7 +45,7 @@ const appRoutes: Routes = [
     }
   },
   {
-    path: 'login',
+    path: 'customer/login',
     component: LoginComponent,
     data: {
       title: 'Login to your account',
@@ -57,7 +57,7 @@ const appRoutes: Routes = [
     component: AdminComponent,
     data: {
       title: '',
-      showBack: true,
+      showBack: false,
       showTime: true
     }
   },
@@ -71,11 +71,11 @@ const appRoutes: Routes = [
     }
   },
   { path: '',
-    redirectTo: '/home',
+    redirectTo: '/customer',
     pathMatch: 'full'
   },
   { path: '**',
-    redirectTo: '/home',
+    redirectTo: '/customer',
     pathMatch: 'full' }
 ];
 
