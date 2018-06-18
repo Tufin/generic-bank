@@ -8,7 +8,7 @@ import animations from "./animations/animations";
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less'],
-  animations: [ animations.routerTransition, animations.opacityTransition, animations.navigationOpacity]
+  animations: [ animations.routerTransition, animations.navigationOpacity]
 })
 export class AppComponent implements OnInit{
   private height$ = new BehaviorSubject(0);

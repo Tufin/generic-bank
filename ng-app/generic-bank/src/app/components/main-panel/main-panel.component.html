@@ -33,7 +33,7 @@
 
   <progress-card [text]="timesError ? 'Error while f' : 'F' + 'etching time information...'"
                  [icon]="timesError ? 'exclamation' : 'refresh fa-spin'"
-                 [bgColor]="timesError ? 'danger' : 'success'" *ngIf="showTime && !times" [@opacityTransition]></progress-card>
+                 [bgColor]="timesError ? 'danger' : 'success'" *ngIf="showTime && !times" @opacityTransition></progress-card>
 
   <div class="row" *ngIf="showTime && times && !timesError;" [@expandTransition]="!!time">
     <div class="col-12 col-md-4" *ngFor="let time of times;">
