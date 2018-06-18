@@ -51,8 +51,13 @@ func main() {
 		router.PathPrefix("/boa/customer").Handler(http.StripPrefix("/boa/customer", http.FileServer(http.Dir("/boa/html/customer/"))))
 	}
 
-	//router.PathPrefix("/ui").Handler(http.StripPrefix("/ui") )
-	router.HandleFunc("/ui", getAngularApp);
+	//router.PathPrefix("/ui").Handler(http.StripPrefix("/ui"))
+	//router.HandleFunc("/ui", getAngularApp)
+
+	router.HandleFunc("/ui", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "/boa/html/index.html")
+	})
+
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -67,10 +72,6 @@ func main() {
 
 	<-stop // wait for SIGINT
 	log.Info("Generic Bank Server has been stopped")
-}
-
-func getAngularApp(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "/boa/html/index.html")
 }
 
 func getRedisUrl() string {
