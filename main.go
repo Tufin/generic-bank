@@ -53,7 +53,7 @@ func main() {
 
 	// New angular application router
 	router.PathPrefix("/ui").Handler(angularRouteHandler(getAngularAssets("/boa/html/")))
-	router.Handle("/ui/", angularRouteHandler(http.HandlerFunc(getAngularApp)))
+	//router.Handle("/ui/", angularRouteHandler(http.HandlerFunc(getAngularApp)))
 
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
