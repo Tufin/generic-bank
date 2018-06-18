@@ -34,8 +34,18 @@
 .time {
   padding-bottom: 1.5em;
 
+  .row {
+    align-content: stretch;
+    align-items: stretch;
+
+    [class*="col-"] {
+      display: flex;
+    }
+  }
+
   .card {
     margin-bottom: 0.5em;
+    width: 100%;
   }
 
   h1 {

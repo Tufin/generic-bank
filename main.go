@@ -52,7 +52,8 @@ func main() {
 	}
 
 	// New angular application router
-	router.Handle("/ui/", angularRouteHandler(getAngularAssets(http.HandlerFunc(getAngularApp))))
+	router.Handle("/ui/", angularRouteHandler(getAngularAssets()))
+	router.Handle("/ui/", angularRouteHandler(http.HandlerFunc(getAngularApp)))
 
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -70,9 +71,8 @@ func main() {
 	log.Info("Generic Bank Server has been stopped")
 }
 
-func getAngularAssets(h http.Handler) http.Handler {
-	http.FileServer(http.Dir("/boa/html/"))
-	return h
+func getAngularAssets() http.Handler {
+	return http.FileServer(http.Dir("/boa/html/"))
 }
 
 func getAngularApp(w http.ResponseWriter, r *http.Request) {
