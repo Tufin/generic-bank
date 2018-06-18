@@ -7,7 +7,7 @@
              placeholder="First Name"
              [(ngModel)]="model.first"
              #firstName="ngModel"
-             [ngClass]="{'is-invalid': firstName.dirty && firstName.invalid}"
+             [ngClass]="{'is-invalid': firstName?.dirty && firstName?.invalid}"
              required>
     </div>
   </div>
@@ -19,7 +19,7 @@
              placeholder="Last Name"
              [(ngModel)]="model.last"
              #lastName="ngModel"
-             [ngClass]="{'is-invalid': lastName.dirty && lastName.invalid}"
+             [ngClass]="{'is-invalid': lastName?.dirty && lastName?.invalid}"
              required>
     </div>
   </div>
@@ -28,7 +28,7 @@
     <div class="col-12 col-sm-10 col-lg-8">
       <div class="row justify-content-xs-center justify-content-sm-end">
         <div class="col-xs-8 col-sm-auto">
-          <button type="submit" class="form-input btn btn-success btn-block" [disabled]="!form.valid">Login</button>
+          <button type="submit" class="form-input btn btn-success btn-block" [disabled]="!form?.valid">Login</button>
         </div>
       </div>
     </div>

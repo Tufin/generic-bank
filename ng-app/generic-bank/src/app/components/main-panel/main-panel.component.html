@@ -38,8 +38,8 @@
   <div class="row" *ngIf="showTime && times && !timesError;" [@expandTransition]="!!time">
     <div class="col-12 col-md-4" *ngFor="let time of times;">
       <div class="card">
-        <div class="card-body">
-          <h1 class="text-center">{{time.date.split(' ')[0]}}<small>{{time.date.split(' ')[1]}}</small></h1>
+        <div class="card-body" *ngIf="time?.date?.split(' ') as timeString">
+          <h1 class="text-center">{{timeString[0]}}<small>{{timeString[1]}}</small></h1>
           <hr />
           <h3 class="text-center">{{time.countryName}}</h3>
         </div>
