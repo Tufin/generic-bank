@@ -235,7 +235,7 @@ func accountBalance(w http.ResponseWriter, r *http.Request) {
 		},
 		{
 			Label: "Investments",
-			Amount: random(0, 150000),
+			Amount: random(0, 100000),
 		},
 		{
 			Label: "Balance",
