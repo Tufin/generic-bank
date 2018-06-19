@@ -73,7 +73,7 @@ jobs:
           environment:
             GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
             GCLOUD_PROJECT_ID: dream-198012
-            GCLOUD_CLUSTER_NAME: aut-cluster
+            GCLOUD_CLUSTER_NAME: aut2-cluster
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: admin
       - run:
@@ -83,7 +83,7 @@ jobs:
           environment:
             GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
             GCLOUD_PROJECT_ID: dream-198012
-            GCLOUD_CLUSTER_NAME: aut-cluster
+            GCLOUD_CLUSTER_NAME: aut2-cluster
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: customer
       - run:
@@ -93,7 +93,7 @@ jobs:
           environment:
             GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
             GCLOUD_PROJECT_ID: dream-198012
-            GCLOUD_CLUSTER_NAME: aut-cluster
+            GCLOUD_CLUSTER_NAME: aut2-cluster
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: balance
 
