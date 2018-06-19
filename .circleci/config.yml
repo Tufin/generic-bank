@@ -65,14 +65,14 @@ jobs:
       - run:
           name: Authenticate with gcloud
           command:
-            echo $GCLOUD_SERVICE_KEY_LIGHT | /scripts/gcloud_auth.sh
+            echo $GCLOUD_SERVICE_KEY | /scripts/gcloud_auth.sh
       - run:
           name: Update admin deployment on google cloud (if tufin.io cluster is up and running)
           command: |
             /scripts/update_deployment.sh $GCLOUD_PROJECT_ID $GCLOUD_CLUSTER_NAME $GCLOUD_ZONE deployment/$DEPLOYMENT $DEPLOYMENT=$IMAGE_NAME:$CIRCLE_BUILD_NUM default
           environment:
             GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
-            GCLOUD_PROJECT_ID: tufinlight
+            GCLOUD_PROJECT_ID: dream-198012
             GCLOUD_CLUSTER_NAME: aut-cluster
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: admin
@@ -82,7 +82,7 @@ jobs:
             /scripts/update_deployment.sh $GCLOUD_PROJECT_ID $GCLOUD_CLUSTER_NAME $GCLOUD_ZONE deployment/$DEPLOYMENT $DEPLOYMENT=$IMAGE_NAME:$CIRCLE_BUILD_NUM default
           environment:
             GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
-            GCLOUD_PROJECT_ID: tufinlight
+            GCLOUD_PROJECT_ID: dream-198012
             GCLOUD_CLUSTER_NAME: aut-cluster
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: customer
@@ -92,10 +92,11 @@ jobs:
             /scripts/update_deployment.sh $GCLOUD_PROJECT_ID $GCLOUD_CLUSTER_NAME $GCLOUD_ZONE deployment/$DEPLOYMENT $DEPLOYMENT=$IMAGE_NAME:$CIRCLE_BUILD_NUM default
           environment:
             GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
-            GCLOUD_PROJECT_ID: tufinlight
+            GCLOUD_PROJECT_ID: dream-198012
             GCLOUD_CLUSTER_NAME: aut-cluster
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: balance
+
 
 workflows:
   version: 2
