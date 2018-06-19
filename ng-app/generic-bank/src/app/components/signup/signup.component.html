@@ -1,7 +1,7 @@
 <span [asyncProgress]="respond$" (data)="onSuccess($event)" (error)="error = $event" (complete)="complete = $event"></span>
 <form (ngSubmit)="createAccount(firstName.value, lastName.value, $event)" #form="ngForm" novalidate *ngIf="!error">
   <div class="form-group row justify-content-center">
-    <div class="col-12 col-sm-10 col-lg-8">
+    <div class="col-12 col-sm-10 col-lg-6">
       <input type="text"
              class="form-control"
              name="firstName"
@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="form-group row justify-content-center">
-    <div class="col-12 col-sm-10 col-lg-8">
+    <div class="col-12 col-sm-10 col-lg-6">
       <input type="text"
              class="form-control"
              name="lastName"
@@ -26,7 +26,7 @@
   </div>
 
   <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-lg-8">
+    <div class="col-12 col-sm-10 col-lg-6">
       <div class="row justify-content-xs-center justify-content-sm-end">
         <div class="col-xs-8 col-sm-auto">
           <button type="submit" class="form-input btn btn-success btn-block" [disabled]="!form.valid">Create Account</button>

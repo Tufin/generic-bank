@@ -17,7 +17,8 @@
         </tr>
       </tbody>
     </table>
-    <p *ngIf="list.length === 0">No accounts found...</p>
+    <p *ngIf="list.length === 0 && complete">No accounts found...</p>
+    <p *ngIf="!complete">Fetching data...</p>
   </div>
 </div>
 

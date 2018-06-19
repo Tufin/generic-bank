@@ -21,11 +21,11 @@ export class LoginComponent {
   loginAccount(first, last, $event) {
     $event.preventDefault();
 
-    console.log(this.model, first, last);
+    // console.log(this.model, first, last);
 
-    if(this.model.first === 'admin' && this.model.last === 'admin') {
-      this.router.navigate([this.loginLink]);
-    }
+    // if(this.model.first === 'admin' && this.model.last === 'admin') {
+    this.router.navigate([this.loginLink]);
+    // }
   }
 
 }

@@ -17,6 +17,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { ProgressCardComponent } from './components/progress-card/progress-card.component';
 import { AccountCreatedComponent } from './components/account-created/account-created.component';
 import { AccountsListComponent } from './components/accounts-list/accounts-list.component';
+import { BalanceComponent } from './components/balance/balance.component';
 
 const currentPath = location.pathname.replace(/\//g, '');
 
@@ -27,7 +28,6 @@ const adminRoutes: Routes = [
     data: {
       title: '',
       showBack: false,
-      showTime: true,
       link: '/accounts'
     }
   },
@@ -56,7 +56,6 @@ const customerRoutes: Routes = [
     data: {
       title: 'Welcome to Generic Bank’s Customer Portal',
       showBack: false,
-      showTime: true,
       loginLink: '/login',
       signupLink: '/signup'
     }
@@ -105,7 +104,6 @@ const devRoutes: Routes = [
     data: {
       title: 'Welcome to Generic Bank’s Customer Portal',
       showBack: false,
-      showTime: true,
       loginLink: '/login',
       signupLink: '/signup'
     }
@@ -126,6 +124,14 @@ const devRoutes: Routes = [
       title: 'Thank you for choosing us as your bank',
       showBack: false,
       link: '/balance'
+    }
+  },
+  {
+    path: 'balance',
+    component: BalanceComponent,
+    data: {
+      title: 'Account balance',
+      showBack: true,
     }
   },
   {
@@ -190,7 +196,8 @@ console.log(currentPath);
     AsyncProgressDirective,
     ProgressCardComponent,
     AccountCreatedComponent,
-    AccountsListComponent
+    AccountsListComponent,
+    BalanceComponent
   ],
   imports: [
     BrowserModule,

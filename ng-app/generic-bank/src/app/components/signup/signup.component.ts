@@ -29,6 +29,9 @@ export class SignupComponent {
   createAccount(first: string, last: string, $event) {
     $event.preventDefault();
 
+    first = first.trim().replace(/\s+/g, '-');
+    last = last.trim().replace(/\s+/g, '-');
+
     this.respond$ = this.api.createAccount(first, last);
   }
 
