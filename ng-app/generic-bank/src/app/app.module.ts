@@ -28,6 +28,7 @@ const adminRoutes: Routes = [
     data: {
       title: '',
       showBack: false,
+      showTime: true,
       link: '/accounts'
     }
   },

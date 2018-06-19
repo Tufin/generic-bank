@@ -213,14 +213,14 @@ func getBalanceAsCustomer(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(500)
 	} else {
-		w.WriteHeader(http.StatusOK)
-
 		defer response.Body.Close()
 		body, err := ioutil.ReadAll(response.Body)
 
 		if err != nil {
-			log.Errorf("failed to read time body from time service '%v'", err)
+			log.Errorf("failed to read balance body from balance service '%v'", err)
+			w.WriteHeader(500)
 		} else {
+			w.WriteHeader(http.StatusOK)
 			w.Write(body)
 		}
 	}
