@@ -30,8 +30,6 @@ func main() {
 	stop := make(chan os.Signal)
 	signal.Notify(stop, os.Interrupt)
 
-	port := ":8085"
-
 	redis = getRedisUrl()
 	balanceURL = getBalanceURL()
 
@@ -51,7 +49,6 @@ func main() {
 	} else {
 		log.Info("Customer Mode")
 		router.HandleFunc("/balance", getBalanceAsCustomer).Methods(http.MethodGet)
-		port = ":8086"
 		router.PathPrefix("/customer").Handler(angularRouteHandler("/customer", getAngularAssets("/boa/html/")))
 		router.Handle("/customer/", angularRouteHandler("/customer", http.HandlerFunc(getAngularApp)))
 	}
@@ -61,6 +58,7 @@ func main() {
 	}).Methods(http.MethodGet)
 
 	go func() {
+		const port = ":8085"
 		log.Infof("Generic Bank Server listening on port %s", port)
 		if err := http.ListenAndServe(port, router); err != nil {
 			log.Error("Generic Bank Server interrupted. ", err)
