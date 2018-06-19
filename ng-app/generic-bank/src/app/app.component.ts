@@ -20,6 +20,7 @@ export class AppComponent implements OnInit{
   title = 'app';
   showBack = false;
   showTime = false;
+  backString = 'Back';
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -34,6 +35,7 @@ export class AppComponent implements OnInit{
         this.title = data['title'];
         this.showBack = data['showBack'];
         this.showTime = data['showTime'] || false;
+        this.backString = data['backString'] || 'Back';
       }
     });
 

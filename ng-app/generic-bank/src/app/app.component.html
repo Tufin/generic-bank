@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row align-items-center justify-content-center">
     <div class="col-10 col-sm-10 col-md-8 col-lg-6 col-xl-6">
-      <app-main-panel [title]="title" [showBack]="showBack" [showTime]="showTime">
+      <app-main-panel [title]="title" [showBack]="showBack" [showTime]="showTime" [backString]="backString">
         <main [@routerTransition]="o.isActivated ? o.activatedRoute : ''"
               [@navigationOpacity]="o.isActivated ? o.activatedRoute : ''"
               (exposeHeight)="applyHeight($event)" #main>

@@ -4,6 +4,7 @@ import {ApiService, timeResponse} from "../../services/api/api.service";
 import {Observable} from "rxjs/internal/Observable";
 import animations from "../../animations/animations";
 import {isNullOrUndefined} from "util";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-main-panel',
@@ -18,8 +19,8 @@ export class MainPanelComponent {
   public times: Array<timeResponse> = null;
   public timesError: boolean = false;
   public timesLoading: boolean = false;
-
   @Input() title = 'This is a title';
+
   @Input() showBack = false;
   @Input() set showTime(value: boolean) {
     this._showTime = value;
@@ -31,14 +32,23 @@ export class MainPanelComponent {
     }
   };
 
+  @Input() backString = 'Back';
+
   get showTime(): boolean {
     return this._showTime;
   }
 
-  constructor(private api: ApiService, private location: Location) { }
+  constructor(private api: ApiService, private location: Location, private route: ActivatedRoute, private router: Router) {
+    this.backString = route.data['value'].backString;
+  }
+
 
   goBack() {
-    this.location.back();
+    // if(isNullOrUndefined(this.backString)) {
+    //   this.location.back();
+    // } else {
+      this.router.navigate(['/home']);
+    // }
   }
 
   onError(err) {

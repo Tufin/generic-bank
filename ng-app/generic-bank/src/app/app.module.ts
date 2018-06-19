@@ -74,7 +74,8 @@ const customerRoutes: Routes = [
     component: BalanceComponent,
     data: {
       title: 'Account balance',
-      showBack: false,
+      showBack: true,
+      backString: 'Logout'
     }
   },
   {
@@ -140,6 +141,7 @@ const devRoutes: Routes = [
     data: {
       title: 'Account balance',
       showBack: true,
+      backString: 'Logout'
     }
   },
   {
