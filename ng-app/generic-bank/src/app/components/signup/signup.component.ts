@@ -1,7 +1,7 @@
-import {AfterViewChecked, AfterViewInit, Component, ComponentRef, ElementRef, OnInit, ViewRef} from '@angular/core';
+import {Component} from '@angular/core';
 import {ApiService} from "../../services/api/api.service";
 import {Observable} from "rxjs/internal/Observable";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-signup',
@@ -9,6 +9,8 @@ import {Router} from "@angular/router";
   styleUrls: ['./signup.component.less']
 })
 export class SignupComponent {
+  public thanksLink = '';
+
   public model = {
     first: '',
     last: ''
@@ -20,7 +22,9 @@ export class SignupComponent {
   public error = null;
   public data = null;
 
-  constructor(private api: ApiService, private router: Router) { }
+  constructor(private api: ApiService, private router: Router, private route: ActivatedRoute) {
+    this.thanksLink = route.data['value'].link;
+  }
 
   createAccount(first: string, last: string, $event) {
     $event.preventDefault();
@@ -33,6 +37,6 @@ export class SignupComponent {
 
     const id = accountRegex.exec(data)[1];
 
-    this.router.navigate(['/customer/thanks', id]);
+    this.router.navigate([this.thanksLink, id]);
   }
 }

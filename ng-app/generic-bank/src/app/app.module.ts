@@ -18,38 +18,123 @@ import { ProgressCardComponent } from './components/progress-card/progress-card.
 import { AccountCreatedComponent } from './components/account-created/account-created.component';
 import { AccountsListComponent } from './components/accounts-list/accounts-list.component';
 
-const appRoutes: Routes = [
+const currentPath = location.pathname.replace(/\//g, '');
+
+const adminRoutes: Routes = [
   {
-    path: 'customer',
+    path: 'home',
+    component: AdminComponent,
+    data: {
+      title: '',
+      showBack: false,
+      showTime: true,
+      link: '/accounts'
+    }
+  },
+  {
+    path: 'accounts',
+    component: AccountsListComponent,
+    data: {
+      title: 'New customer accounts',
+      showBack: true
+    }
+  },
+  { path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  },
+  { path: '**',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  }
+];
+
+const customerRoutes: Routes = [
+  {
+    path: 'home',
     component: HomeComponent,
     data: {
       title: 'Welcome to Generic Bank’s Customer Portal',
       showBack: false,
-      showTime: true
+      showTime: true,
+      loginLink: '/login',
+      signupLink: '/signup'
     }
   },
   {
-    path: 'customer/signup',
+    path: 'signup',
     component: SignupComponent,
     data: {
       title: 'Open an account',
-      showBack: true
+      showBack: true,
+      link: '/thanks'
     }
   },
   {
-    path: 'customer/thanks/:id',
+    path: 'thanks/:id',
     component: AccountCreatedComponent,
     data: {
       title: 'Thank you for choosing us as your bank',
-      showBack: false
+      showBack: false,
+      link: '/balance'
     }
   },
   {
-    path: 'customer/login',
+    path: 'login',
     component: LoginComponent,
     data: {
       title: 'Login to your account',
-      showBack: true
+      showBack: true,
+      link: '/balance'
+    }
+  },
+  { path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  },
+  { path: '**',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  }
+];
+
+const devRoutes: Routes = [
+  {
+    path: 'home',
+    component: HomeComponent,
+    data: {
+      title: 'Welcome to Generic Bank’s Customer Portal',
+      showBack: false,
+      showTime: true,
+      loginLink: '/login',
+      signupLink: '/signup'
+    }
+  },
+  {
+    path: 'signup',
+    component: SignupComponent,
+    data: {
+      title: 'Open an account',
+      showBack: true,
+      link: '/thanks'
+    }
+  },
+  {
+    path: 'thanks/:id',
+    component: AccountCreatedComponent,
+    data: {
+      title: 'Thank you for choosing us as your bank',
+      showBack: false,
+      link: '/balance'
+    }
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+    data: {
+      title: 'Login to your account',
+      showBack: true,
+      link: '/balance'
     }
   },
   {
@@ -58,7 +143,8 @@ const appRoutes: Routes = [
     data: {
       title: '',
       showBack: false,
-      showTime: true
+      showTime: true,
+      link: '/admin/accounts'
     }
   },
   {
@@ -71,13 +157,26 @@ const appRoutes: Routes = [
     }
   },
   { path: '',
-    redirectTo: '/customer',
+    redirectTo: '/home',
     pathMatch: 'full'
   },
   { path: '**',
-    redirectTo: '/customer',
-    pathMatch: 'full' }
+    redirectTo: '/home',
+    pathMatch: 'full'
+  }
 ];
+
+let appRoutes: Routes = [];
+
+if(currentPath === 'admin') { //admin mode
+  appRoutes = adminRoutes;
+} else if(currentPath === 'customer') { //customer mode
+  appRoutes = customerRoutes;
+} else { //dev
+  appRoutes = devRoutes;
+}
+
+console.log(currentPath);
 
 @NgModule({
   declarations: [

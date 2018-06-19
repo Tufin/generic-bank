@@ -43,20 +43,21 @@ func main() {
 	if mode == "admin" {
 		log.Info("going into admin mode")
 		router.PathPrefix("/boa/admin").Handler(http.StripPrefix("/boa/admin", http.FileServer(http.Dir("/boa/html/admin/"))))
+		// New angular application router
+		router.PathPrefix("/admin").Handler(angularRouteHandler("/admin", getAngularAssets("/boa/html/")))
+		router.Handle("/admin/", angularRouteHandler("/admin", http.HandlerFunc(getAngularApp)))
 	} else if mode == "maintenance" {
 		log.Info("going into maintenance mode")
 		router.PathPrefix("/boa/admin").Handler(http.StripPrefix("/boa/admin", http.FileServer(http.Dir("/boa/html/maintenance/"))))
+
 	} else if mode == "customer" {
 		log.Info("going into customer mode")
 		router.PathPrefix("/boa/customer").Handler(http.StripPrefix("/boa/customer", http.FileServer(http.Dir("/boa/html/customer/"))))
+
+		// New angular application router
+		router.PathPrefix("/customer").Handler(angularRouteHandler("/customer", getAngularAssets("/boa/html/")))
+		router.Handle("/customer/", angularRouteHandler("/customer", http.HandlerFunc(getAngularApp)))
 	}
-
-	// New angular application router
-	router.PathPrefix("/admin").Handler(angularRouteHandler("/admin", getAngularAssets("/boa/html/")))
-	router.Handle("/admin/", angularRouteHandler("/admin", http.HandlerFunc(getAngularAdminApp)))
-
-	router.PathPrefix("/customer").Handler(angularRouteHandler("/customer", getAngularAssets("/boa/html/")))
-	router.Handle("/customer/", angularRouteHandler("/customer", http.HandlerFunc(getAngularCustomerApp)))
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -77,13 +78,8 @@ func getAngularAssets(path string) http.Handler {
 	return http.FileServer(http.Dir(path))
 }
 
-func getAngularCustomerApp(w http.ResponseWriter, r *http.Request) {
+func getAngularApp(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "/boa/html/index.html")
-}
-
-func getAngularAdminApp(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "/boa/html/index.html")
-	http.Redirect(w, r, "/admin/#/admin", http.StatusSeeOther)
 }
 
 func angularRouteHandler(path string, h http.Handler) http.Handler {

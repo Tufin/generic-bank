@@ -6,20 +6,12 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './account-created.component.html',
   styleUrls: ['./account-created.component.less']
 })
-export class AccountCreatedComponent implements OnInit, OnDestroy {
+export class AccountCreatedComponent {
   public id: string;
-  private sub$;
+  public balanceLink = '';
 
-  constructor(private route: ActivatedRoute) { }
-
-  ngOnInit() {
-    this.sub$ = this.route.params.subscribe(params => {
-      this.id = params['id'];
-    });
+  constructor(private route: ActivatedRoute) {
+    this.id = route.params['value'].id;
+    this.balanceLink = route.data['value'].link;
   }
-
-  ngOnDestroy() {
-    this.sub$.unsubscribe();
-  }
-
 }
