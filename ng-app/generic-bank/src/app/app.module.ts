@@ -70,6 +70,14 @@ const customerRoutes: Routes = [
     }
   },
   {
+    path: 'balance',
+    component: BalanceComponent,
+    data: {
+      title: 'Account balance',
+      showBack: false,
+    }
+  },
+  {
     path: 'thanks/:id',
     component: AccountCreatedComponent,
     data: {
