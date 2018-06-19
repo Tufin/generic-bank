@@ -47,7 +47,13 @@ func main() {
 	router.HandleFunc("/boa/admin/accounts", getAccounts).Methods(http.MethodGet)
 	router.HandleFunc("/accounts/{account-id}", createAccount).Methods(http.MethodPost)
 	router.HandleFunc("/time", getTime).Methods(http.MethodGet)
-	router.HandleFunc("/balance", accountBalance).Methods(http.MethodGet)
+
+	if mode == "customer" {
+		router.HandleFunc("/balance", getBalanceAsCustomer).Methods(http.MethodGet)
+
+	} else {
+		router.HandleFunc("/balance", accountBalance).Methods(http.MethodGet)
+	}
 
 	if mode == "admin" {
 		log.Info("going into admin mode")
@@ -199,6 +205,25 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 		log.Infof(msg)
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprint(w, msg)
+	}
+}
+
+func getBalanceAsCustomer(w http.ResponseWriter, r *http.Request) {
+	response, err := http.Get("http://balance/balance")
+
+	if err != nil {
+		w.WriteHeader(500)
+	} else {
+		w.WriteHeader(http.StatusOK)
+
+		defer response.Body.Close()
+		body, err := ioutil.ReadAll(response.Body)
+
+		if err != nil {
+			log.Errorf("failed to read time body from time service '%v'", err)
+		} else {
+			w.Write(body)
+		}
 	}
 }
 
