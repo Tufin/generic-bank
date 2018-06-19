@@ -10,9 +10,17 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"encoding/json"
+	"math/rand"
+	"time"
 )
 
 var redis string
+
+type Balance struct {
+	Label string	`json:"label" form:"label" binding:"required"`
+	Amount int	`json:"amount" form:"amount" binding:"required"`
+}
 
 //var pgClient common.PostgresClient
 
@@ -39,6 +47,7 @@ func main() {
 	router.HandleFunc("/boa/admin/accounts", getAccounts).Methods(http.MethodGet)
 	router.HandleFunc("/accounts/{account-id}", createAccount).Methods(http.MethodPost)
 	router.HandleFunc("/time", getTime).Methods(http.MethodGet)
+	router.HandleFunc("/balance", accountBalance).Methods(http.MethodGet)
 
 	if mode == "admin" {
 		log.Info("going into admin mode")
@@ -175,7 +184,6 @@ func getPostgresAccountsUrl() string {
 }
 
 func createAccount(w http.ResponseWriter, r *http.Request) {
-
 	id := mux.Vars(r)["account-id"]
 	url := fmt.Sprintf("%s/accounts", redis)
 	log.Infof("Creating account '%s' in redis (%s)", id, url)
@@ -192,4 +200,36 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprint(w, msg)
 	}
+}
+
+func accountBalance(w http.ResponseWriter, r *http.Request) {
+	res := []Balance{
+		{
+			Label: "Savings",
+			Amount: random(0, 150000),
+		},
+		{
+			Label: "Investments",
+			Amount: random(0, 150000),
+		},
+		{
+			Label: "Balance",
+			Amount: random(-15000, 150000),
+		},
+	}
+
+	resBody, err := json.Marshal(res)
+
+	if err != nil {
+		w.WriteHeader(500)
+	} else {
+		w.WriteHeader(200)
+		w.Header().Set("Content-Type","application/json")
+		w.Write(resBody)
+	}
+}
+
+func random(min, max int) int {
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(max - min) + min
 }
