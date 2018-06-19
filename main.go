@@ -50,7 +50,6 @@ func main() {
 
 	if mode == "customer" {
 		router.HandleFunc("/balance", getBalanceAsCustomer).Methods(http.MethodGet)
-
 	} else {
 		router.HandleFunc("/balance", accountBalance).Methods(http.MethodGet)
 	}
