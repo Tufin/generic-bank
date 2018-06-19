@@ -1,0 +1,25 @@
+<div class="balance">
+  <span [asyncProgress]="balance$"
+        (complete)="complete = $event"
+        (error)="onError(!!$event)"
+        (data)="onSuccess($event)"></span>
+
+  <progress-card [text]="(error ? 'Error while f' : 'F') + 'etching balance information...'"
+                 [icon]="error ? 'exclamation' : 'refresh fa-spin'"
+                 [bgColor]="error ? 'danger' : 'success'" *ngIf="!balance"></progress-card>
+
+  <div class="row">
+    <div class="col-12 col-md-4" *ngFor="let info of balance">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="text-center text-nowrap">
+            <span [ngClass]="info.color">
+              {{info.amount | currency: 'USD' : 'symbol':'1.0-0' }}
+            </span>
+            <small>{{info.label}}</small>
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
