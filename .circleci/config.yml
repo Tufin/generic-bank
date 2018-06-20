@@ -67,36 +67,15 @@ jobs:
           command:
             echo $GCLOUD_SERVICE_KEY | /scripts/gcloud_auth.sh
       - run:
-          name: Update admin deployment on google cloud (if tufin.io cluster is up and running)
+          name: Update deployment on google cloud (if tufin.io cluster is up and running)
           command: |
-            /scripts/update_deployment.sh $GCLOUD_PROJECT_ID $GCLOUD_CLUSTER_NAME $GCLOUD_ZONE deployment/$DEPLOYMENT $DEPLOYMENT=$IMAGE_NAME:$CIRCLE_BUILD_NUM default
+            /scripts/update_deployment.sh $GCLOUD_PROJECT_ID $GCLOUD_CLUSTER_NAME $GCLOUD_ZONE deployment/$DEPLOYMENT admin=$IMAGE_NAME:$CIRCLE_BUILD_NUM default
           environment:
             GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
             GCLOUD_PROJECT_ID: dream-198012
-            GCLOUD_CLUSTER_NAME: aut2-cluster
+            GCLOUD_CLUSTER_NAME: aut-cluster
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: admin
-      - run:
-          name: Update customer deployment on google cloud (if tufin.io cluster is up and running)
-          command: |
-            /scripts/update_deployment.sh $GCLOUD_PROJECT_ID $GCLOUD_CLUSTER_NAME $GCLOUD_ZONE deployment/$DEPLOYMENT $DEPLOYMENT=$IMAGE_NAME:$CIRCLE_BUILD_NUM default
-          environment:
-            GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
-            GCLOUD_PROJECT_ID: dream-198012
-            GCLOUD_CLUSTER_NAME: aut2-cluster
-            GCLOUD_ZONE: europe-west1-b
-            DEPLOYMENT: customer
-      - run:
-          name: Update balance deployment on google cloud (if tufin.io cluster is up and running)
-          command: |
-            /scripts/update_deployment.sh $GCLOUD_PROJECT_ID $GCLOUD_CLUSTER_NAME $GCLOUD_ZONE deployment/$DEPLOYMENT $DEPLOYMENT=$IMAGE_NAME:$CIRCLE_BUILD_NUM default
-          environment:
-            GCLOUD_SERVICE_KEY_FILE: gcloud-service-key.json
-            GCLOUD_PROJECT_ID: dream-198012
-            GCLOUD_CLUSTER_NAME: aut2-cluster
-            GCLOUD_ZONE: europe-west1-b
-            DEPLOYMENT: balance
-
 
 #workflows:
 #  version: 2
