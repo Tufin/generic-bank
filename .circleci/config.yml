@@ -4,25 +4,25 @@ general:
       - world-trading-updates
 version: 2
 jobs:
-  build-app:
-    working_directory: /go/src/github.com/tufin/generic-bank
-    docker:
-      - image: bnohad/docker-angular-cli
-    steps:
-      - checkout
-
-      - run:
-          name: Build generic-app angular app
-          command: |
-            cd ng-app/generic-bank
-            npm install
-            ng build
-
-      - persist_to_workspace:
-          root: ng-app/generic-bank
-          # Must be relative path from root
-          paths:
-            - dist
+#  build-app:
+#    working_directory: /go/src/github.com/tufin/generic-bank
+#    docker:
+#      - image: bnohad/docker-angular-cli
+#    steps:
+#      - checkout
+#
+#      - run:
+#          name: Build generic-app angular app
+#          command: |
+#            cd ng-app/generic-bank
+#            npm install
+#            ng build
+#
+#      - persist_to_workspace:
+#          root: ng-app/generic-bank
+#          # Must be relative path from root
+#          paths:
+#            - dist
 
   build:
     working_directory: /go/src/github.com/tufin/generic-bank
@@ -35,8 +35,8 @@ jobs:
       TUFIN_URL: https://orca.tufin.io
     steps:
       - checkout
-      - attach_workspace:
-          at: ng-app/generic-bank
+#      - attach_workspace:
+#          at: ng-app/generic-bank
       - run:
           name: Build
           command: |
@@ -98,11 +98,11 @@ jobs:
             DEPLOYMENT: balance
 
 
-workflows:
-  version: 2
-  build_and_deploy:
-    jobs:
-      - build-app
-      - build:
-          requires:
-            - build-app
+#workflows:
+#  version: 2
+#  build_and_deploy:
+#    jobs:
+#      - build-app
+#      - build:
+#          requires:
+#            - build-app
