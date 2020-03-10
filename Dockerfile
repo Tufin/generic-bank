@@ -8,4 +8,7 @@ EXPOSE 8085
 
 WORKDIR /boa/bin
 
+RUN adduser -D gbank
+USER gbank
+
 CMD ["/boa/bin/generic-bank"]
