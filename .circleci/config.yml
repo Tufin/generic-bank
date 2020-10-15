@@ -25,7 +25,8 @@ jobs:
       - run:
           name: Build
           command: |
-            /scripts/go_build.sh generic-bank
+            mkdir ".dist"
+            CGO_ENABLED=0 go build -v -o ".dist/generic-bank"
       - setup_remote_docker
       - run:
           name: Build Docker image

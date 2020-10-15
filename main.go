@@ -1,9 +1,6 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/gorilla/mux"
-
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -13,6 +10,10 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
+	sabik "github.com/tufin/sabik/client"
 )
 
 var (
@@ -32,23 +33,26 @@ func main() {
 
 	redis = getRedisUrl()
 	balanceURL = getBalanceURL()
+	mode := os.Getenv("MODE")
 
 	router := mux.NewRouter()
-	router.HandleFunc("/boa/admin/accounts", getAccounts).Methods(http.MethodGet)
-	router.HandleFunc("/accounts/{account-id}", createAccount).Methods(http.MethodPost)
-	router.HandleFunc("/time", getTime).Methods(http.MethodGet)
+	middleware := createMiddleware(mode)
+	router.Handle("/boa/admin/accounts", middleware.Handle(http.HandlerFunc(getAccounts))).Methods(http.MethodGet)
+	router.Handle("/accounts/{account-id}", middleware.Handle(http.HandlerFunc(createAccount))).Methods(http.MethodPost)
+	router.Handle("/time", middleware.Handle(http.HandlerFunc(getTime))).Methods(http.MethodGet)
 
-	mode := os.Getenv("MODE")
 	if mode == "admin" {
 		log.Info("Admin mode")
 		router.PathPrefix("/admin/").Handler(angularRouteHandler("/admin", getAngularAssets("/boa/html/")))
 	} else if mode == "balance" {
 		log.Info("Balance Mode")
 		router.HandleFunc("/balance", getRandomBalance).Methods(http.MethodGet)
-	} else {
+	} else if mode == "customer" {
 		log.Info("Customer Mode")
 		router.HandleFunc("/balance", getBalanceAsCustomer).Methods(http.MethodGet)
 		router.PathPrefix("/customer/").Handler(angularRouteHandler("/customer", getAngularAssets("/boa/html/")))
+	} else {
+		log.Fatalf("invalid mode '%s'", mode)
 	}
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -257,4 +261,20 @@ func random(min, max int) int {
 	rand.Seed(time.Now().Unix())
 
 	return rand.Intn(max-min) + min
+}
+
+func createMiddleware(serviceName string) *sabik.Middleware {
+
+	fatalOnError(os.Setenv("TUFIN_DOMAIN", "generic-bank"))
+	fatalOnError(os.Setenv("TUFIN_PROJECT", "retail"))
+	fatalOnError(os.Setenv("TUFIN_SERVICE_NAME", serviceName))
+
+	return sabik.NewMiddleware()
+}
+
+func fatalOnError(err error) {
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
