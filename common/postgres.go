@@ -1,8 +1,8 @@
 package common
 
 import (
-	log "github.com/Sirupsen/logrus"
 	_ "github.com/lib/pq"
+	log "github.com/sirupsen/logrus"
 
 	"database/sql"
 	"fmt"
