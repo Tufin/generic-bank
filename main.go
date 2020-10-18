@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	sabik "github.com/tufin/sabik/client"
+	"github.com/tufin/sabik/common/env"
 )
 
 var (
@@ -265,9 +266,9 @@ func random(min, max int) int {
 
 func createMiddleware(serviceName string) *sabik.Middleware {
 
-	fatalOnError(os.Setenv("TUFIN_DOMAIN", "generic-bank"))
-	fatalOnError(os.Setenv("TUFIN_PROJECT", "retail"))
-	fatalOnError(os.Setenv("TUFIN_SERVICE_NAME", serviceName))
+	fatalOnError(os.Setenv(env.KeyDomain, "generic-bank"))
+	fatalOnError(os.Setenv(env.KeyProject, "retail"))
+	fatalOnError(os.Setenv(sabik.EnvKeyServiceName, serviceName))
 
 	return sabik.NewMiddleware()
 }
