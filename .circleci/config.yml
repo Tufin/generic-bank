@@ -25,6 +25,7 @@ jobs:
       - run:
           name: Build
           command: |
+            go get -v -t -d ./...
             mkdir ".dist"
             CGO_ENABLED=0 go build -v -o ".dist/generic-bank"
       - setup_remote_docker
