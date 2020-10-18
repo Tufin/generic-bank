@@ -9,5 +9,5 @@ require (
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.3 // indirect
 	github.com/sirupsen/logrus v1.7.0
-	github.com/tufin/sabik v0.0.0-20201015084350-fbc589fa5c8f
+	github.com/tufin/sabik v0.0.0-20201018093211-b71266e8c478
 )

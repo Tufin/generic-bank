@@ -46,10 +46,10 @@ func main() {
 		router.PathPrefix("/admin/").Handler(angularRouteHandler("/admin", getAngularAssets("/boa/html/")))
 	} else if mode == "balance" {
 		log.Info("Balance Mode")
-		router.HandleFunc("/balance", getRandomBalance).Methods(http.MethodGet)
+		router.Handle("/balance", middleware.Handle(http.HandlerFunc(getRandomBalance))).Methods(http.MethodGet)
 	} else if mode == "customer" {
 		log.Info("Customer Mode")
-		router.HandleFunc("/balance", getBalanceAsCustomer).Methods(http.MethodGet)
+		router.Handle("/balance", middleware.Handle(http.HandlerFunc(getBalanceAsCustomer))).Methods(http.MethodGet)
 		router.PathPrefix("/customer/").Handler(angularRouteHandler("/customer", getAngularAssets("/boa/html/")))
 	} else {
 		log.Fatalf("invalid mode '%s'", mode)
