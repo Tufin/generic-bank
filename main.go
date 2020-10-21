@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -31,6 +32,7 @@ type SSNAccount struct {
 	Name     string
 	Lastname string
 	SSN      string
+	ID       string
 }
 
 func main() {
@@ -211,10 +213,12 @@ func getAccountWithSSN(dbAccounts []string) map[string][]SSNAccount {
 	count := len(ssnNumbers)
 	next := 0
 	var ret []SSNAccount
-	for i := 0; i < len(dbAccounts); i += 2 {
+	for i := 0; i < len(dbAccounts); i++ {
+		arr := strings.Split(dbAccounts[i], ":")
 		ret = append(ret, SSNAccount{
-			Name:     dbAccounts[i],
-			Lastname: dbAccounts[i+1],
+			ID:       arr[0],
+			Name:     arr[1],
+			Lastname: dbAccounts[2],
 			SSN:      ssnNumbers[next],
 		})
 		next++
