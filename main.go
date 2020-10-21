@@ -205,8 +205,8 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-var ssnNumbers = []string{"206045678", "248953456", "349021234", "130964321",
-	"007105678", "150204321", "148171234", "163851234", "163841234", "735115678"}
+var ssnNumbers = []string{"206-04-5678", "248-95-3456", "349-02-1234", "130-96-4321",
+	"007-10-5678", "150-20-4321", "148-17-1234", "163-85-1234", "163-84-1234", "735-11-5678"}
 
 func getAccountWithSSN(dbAccounts []string) map[string][]SSNAccount {
 
