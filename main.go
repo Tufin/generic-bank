@@ -29,10 +29,10 @@ type Balance struct {
 }
 
 type SSNAccount struct {
-	Name     string
-	Lastname string
-	SSN      string
-	ID       string
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Lastname string `json:"lastname"`
+	SSN      string `json:"ssn"`
 }
 
 func main() {
