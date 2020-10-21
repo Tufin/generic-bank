@@ -218,7 +218,7 @@ func getAccountWithSSN(dbAccounts []string) map[string][]SSNAccount {
 		ret = append(ret, SSNAccount{
 			ID:       arr[0],
 			Name:     arr[1],
-			Lastname: dbAccounts[2],
+			Lastname: arr[2],
 			SSN:      ssnNumbers[next],
 		})
 		next++
