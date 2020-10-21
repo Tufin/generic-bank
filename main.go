@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -25,6 +26,13 @@ var (
 type Balance struct {
 	Label  string `json:"label" form:"label" binding:"required"`
 	Amount int    `json:"amount" form:"amount" binding:"required"`
+}
+
+type SSNAccount struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Lastname string `json:"lastname"`
+	SSN      string `json:"ssn"`
 }
 
 func main() {
@@ -154,25 +162,72 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 	if err != nil {
 		log.Errorf("failed to get accounts from postgres (%s) with '%v'", postgres, err)
 		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		if response.StatusCode != http.StatusOK {
-			log.Errorf("failed to get accounts from postgres with status '%s'", response.Status)
-			w.WriteHeader(http.StatusInternalServerError)
-		} else {
-			log.Infof("accounts retrieved successfully")
+		return
+	}
+	if response.StatusCode != http.StatusOK {
+		log.Errorf("failed to get accounts from postgres with status '%s'", response.Status)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-			defer response.Body.Close()
-			body, err := ioutil.ReadAll(response.Body)
+	defer response.Body.Close()
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Errorf("failed to read response body from postgres with '%v'", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	var dbAccounts struct {
+		Accounts []string `json:"accounts"`
+	}
+	err = json.Unmarshal(body, &dbAccounts)
+	if err != nil {
+		log.Errorf("failed to unmarshal response body from postgres into accounts with '%v'", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-			if err != nil {
-				log.Errorf("failed to read response body from postgres with '%v'", err)
-				w.WriteHeader(http.StatusInternalServerError)
-			} else {
-				w.WriteHeader(http.StatusOK)
-				w.Write(body)
-			}
+	accounts := getAccountWithSSN(dbAccounts.Accounts)
+	log.Info(accounts)
+
+	ret, err := json.Marshal(accounts)
+	if err != nil {
+		log.Errorf("failed to marshal SSN accounts with '%v'", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	_, err = w.Write(ret)
+	if err != nil {
+		log.Errorf("failed to write SSN accounts response with '%v'", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+var ssnNumbers = []string{"206-04-5678", "248-95-3456", "349-02-1234", "130-96-4321",
+	"007-10-5678", "150-20-4321", "148-17-1234", "163-85-1234", "163-84-1234", "735-11-5678"}
+
+func getAccountWithSSN(dbAccounts []string) map[string][]SSNAccount {
+
+	count := len(ssnNumbers)
+	next := 0
+	var ret []SSNAccount
+	for i := 0; i < len(dbAccounts); i++ {
+		arr := strings.Split(dbAccounts[i], ":")
+		ret = append(ret, SSNAccount{
+			Name:     arr[0],
+			Lastname: arr[1],
+			ID:       arr[2],
+			SSN:      ssnNumbers[next],
+		})
+		next++
+		if next == count {
+			next = 0
 		}
 	}
+
+	return map[string][]SSNAccount{"accounts": ret}
 }
 
 func getPostgresAccountsUrl() string {
@@ -254,7 +309,10 @@ func getRandomBalance(w http.ResponseWriter, _ *http.Request) {
 	}
 	log.Infof("Random balance: '%+v'", ret)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(ret)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"balance": ret,
+		"cards":   []string{"4485281688960105", "4532343129620269", "4716106401131630485"},
+	})
 }
 
 func random(min, max int) int {
