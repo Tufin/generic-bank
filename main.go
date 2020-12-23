@@ -14,26 +14,13 @@ import (
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
-	sabik "github.com/tufin/sabik/client"
-	"github.com/tufin/sabik/common/env"
+	"github.com/tufin/generic-bank/common"
 )
 
 var (
 	redis      string
 	balanceURL string
 )
-
-type Balance struct {
-	Label  string `json:"label" form:"label" binding:"required"`
-	Amount int    `json:"amount" form:"amount" binding:"required"`
-}
-
-type SSNAccount struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Lastname string `json:"lastname"`
-	SSN      string `json:"ssn"`
-}
 
 func main() {
 
@@ -42,23 +29,20 @@ func main() {
 
 	redis = getRedisUrl()
 	balanceURL = getBalanceURL()
-	mode := os.Getenv("MODE")
+	mode := common.GetEnvOrExit("MODE")
 
 	router := mux.NewRouter()
-	middleware := createMiddleware(mode)
-	router.Handle("/boa/admin/accounts", middleware.Handle(http.HandlerFunc(getAccounts))).Methods(http.MethodGet)
-	router.Handle("/accounts/{account-id}", middleware.Handle(http.HandlerFunc(createAccount))).Methods(http.MethodPost)
-	router.Handle("/time", middleware.Handle(http.HandlerFunc(getTime))).Methods(http.MethodGet)
+	middleware := common.CreateMiddleware(mode)
 
 	if mode == "admin" {
-		log.Info("Admin mode")
+		router.Handle("/admin/accounts", middleware.Handle(http.HandlerFunc(getAccounts))).Methods(http.MethodGet)
+		router.Handle("/admin/time", middleware.Handle(http.HandlerFunc(getTime))).Methods(http.MethodGet)
 		router.PathPrefix("/admin/").Handler(angularRouteHandler("/admin", getAngularAssets("/boa/html/")))
 	} else if mode == "balance" {
-		log.Info("Balance Mode")
 		router.Handle("/balance", middleware.Handle(http.HandlerFunc(getRandomBalance))).Methods(http.MethodGet)
 	} else if mode == "customer" {
-		log.Info("Customer Mode")
-		router.Handle("/balance", middleware.Handle(http.HandlerFunc(getBalanceAsCustomer))).Methods(http.MethodGet)
+		router.Handle("/customer/accounts", middleware.Handle(http.HandlerFunc(createAccount))).Methods(http.MethodPost)
+		router.Handle("/customer/balance", middleware.Handle(http.HandlerFunc(getBalanceAsCustomer))).Methods(http.MethodGet)
 		router.PathPrefix("/customer/").Handler(angularRouteHandler("/customer", getAngularAssets("/boa/html/")))
 	} else {
 		log.Fatalf("invalid mode '%s'", mode)
@@ -72,12 +56,12 @@ func main() {
 		const port = ":8085"
 		log.Infof("Generic Bank Server listening on port %s", port)
 		if err := http.ListenAndServe(port, router); err != nil {
-			log.Error("Generic Bank Server interrupted. ", err)
+			log.Errorf("Generic-Bank Server interrupted with '%v'", err)
 		}
 	}()
 
 	<-stop // wait for SIGINT
-	log.Info("Generic Bank Server has been stopped")
+	log.Info("Generic-Bank Server has been stopped")
 }
 
 func getAngularAssets(path string) http.Handler {
@@ -119,25 +103,27 @@ func getTime(w http.ResponseWriter, r *http.Request) {
 	}
 	response, err := client.Do(getTimeRequest)
 	// END: DO NOT CHANGE
-
 	if err != nil {
 		log.Errorf("failed to get time with '%v'", err)
-	} else {
-		if response.StatusCode != http.StatusOK {
-			log.Errorf("failed to get time with status '%s'", response.Status)
-		} else {
-			log.Infof("time retrieved successfully")
-			w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if response.StatusCode != http.StatusOK {
+		log.Errorf("failed to get time with status '%s'", response.Status)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer common.CloseWithErrLog(response.Body)
+	log.Infof("time retrieved successfully")
 
-			defer response.Body.Close()
-			body, err := ioutil.ReadAll(response.Body)
-
-			if err != nil {
-				log.Errorf("failed to read time body from time service '%v'", err)
-			} else {
-				w.Write(body)
-			}
-		}
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Errorf("failed to read time body from time service '%v'", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if _, err := w.Write(body); err != nil {
+		log.Errorf("failed to time response '%s' to stream with '%v'", string(body), err)
 	}
 }
 
@@ -169,8 +155,8 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	defer common.CloseWithErrLog(response.Body)
 
-	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		log.Errorf("failed to read response body from postgres with '%v'", err)
@@ -208,14 +194,14 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 var ssnNumbers = []string{"206-04-5678", "248-95-3456", "349-02-1234", "130-96-4321",
 	"007-10-5678", "150-20-4321", "148-17-1234", "163-85-1234", "163-84-1234", "735-11-5678"}
 
-func getAccountWithSSN(dbAccounts []string) map[string][]SSNAccount {
+func getAccountWithSSN(dbAccounts []string) map[string][]common.SSNAccount {
 
 	count := len(ssnNumbers)
 	next := 0
-	var ret []SSNAccount
+	var ret []common.SSNAccount
 	for i := 0; i < len(dbAccounts); i++ {
 		arr := strings.Split(dbAccounts[i], ":")
-		ret = append(ret, SSNAccount{
+		ret = append(ret, common.SSNAccount{
 			Name:     arr[0],
 			Lastname: arr[1],
 			ID:       arr[2],
@@ -227,7 +213,7 @@ func getAccountWithSSN(dbAccounts []string) map[string][]SSNAccount {
 		}
 	}
 
-	return map[string][]SSNAccount{"accounts": ret}
+	return map[string][]common.SSNAccount{"accounts": ret}
 }
 
 func getPostgresAccountsUrl() string {
@@ -244,21 +230,39 @@ func getPostgresAccountsUrl() string {
 
 func createAccount(w http.ResponseWriter, r *http.Request) {
 
-	id := mux.Vars(r)["account-id"]
+	var account common.RequestAccount
+	if err := json.NewDecoder(r.Body).Decode(&account); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Infof("failed to unmarshal account request with '%v'", err)
+		return
+	}
+	defer common.CloseWithErrLog(r.Body)
+
 	url := fmt.Sprintf("%s/accounts", redis)
-	log.Infof("Creating account '%s' in redis (%s)", id, url)
-	response, err := http.Post(url, "text/plain", bytes.NewReader([]byte(id)))
+	log.Infof("adding account '%+v' to redis '%s'", account, url)
+	payload, err := json.Marshal(account)
 	if err != nil {
-		log.Errorf("Failed to add key '%s' to redis with '%v'", id, err)
+		log.Errorf("failed to marshal account '%+v' with '%v'", account, err)
 		w.WriteHeader(http.StatusInternalServerError)
-	} else if response.StatusCode != http.StatusCreated {
-		log.Errorf("Failed to add key '%s' to redis with status '%s' (%#v)", id, response.Status, response)
+		return
+	}
+	response, err := http.Post(url, common.ContentTypeApplicationJSON, bytes.NewReader(payload))
+	if err != nil {
+		log.Errorf("failed to add account '%+v' to redis with '%v'", account, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if response.StatusCode != http.StatusCreated {
+		log.Errorf("failed to add account '%+v' to redis with status '%s' (%#v)", account, response.Status, response)
 		w.WriteHeader(response.StatusCode)
-	} else {
-		msg := fmt.Sprintf("Account '%s' has been added to redis", id)
-		log.Infof(msg)
-		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w, msg)
+		return
+	}
+
+	msg := fmt.Sprintf("account '%+v' added to redis", account)
+	log.Infof(msg)
+	w.WriteHeader(http.StatusCreated)
+	if _, err := fmt.Fprint(w, msg); err != nil {
+		log.Errorf("failed to stream response message '%s' with '%v'", msg, err)
 	}
 }
 
@@ -268,7 +272,7 @@ func getBalanceAsCustomer(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Errorf("failed to to get balance from service with '%v'", err)
 	} else {
-		defer response.Body.Close()
+		defer common.CloseWithErrLog(response.Body)
 		if body, err := ioutil.ReadAll(response.Body); err != nil {
 			log.Errorf("failed to read balance body from balance service with '%v'", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -293,7 +297,7 @@ func getBalanceURL() string {
 
 func getRandomBalance(w http.ResponseWriter, _ *http.Request) {
 
-	ret := []Balance{
+	ret := []common.Balance{
 		{
 			Label:  "Savings",
 			Amount: random(0, 150000),
@@ -320,20 +324,4 @@ func random(min, max int) int {
 	rand.Seed(time.Now().Unix())
 
 	return rand.Intn(max-min) + min
-}
-
-func createMiddleware(serviceName string) *sabik.Middleware {
-
-	fatalOnError(os.Setenv(env.KeyDomain, "generic-bank"))
-	fatalOnError(os.Setenv(env.KeyProject, "retail"))
-	fatalOnError(os.Setenv(sabik.EnvKeyServiceName, serviceName))
-
-	return sabik.NewMiddleware()
-}
-
-func fatalOnError(err error) {
-
-	if err != nil {
-		log.Fatal(err)
-	}
 }
