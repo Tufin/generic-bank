@@ -64,23 +64,23 @@ jobs:
     executor: service_exec
     environment:
       IMAGE_NAME: tufinim/tufin-db
-      steps:
-        - checkout
-        - run:
-            name: Build
-            command: |
-              cd db
-              go get -v -t -d ./...
-              mkdir ".dist"
-              CGO_ENABLED=0 go build -v -o ".dist/generic-bank-db"
-        - setup_remote_docker
-        - run:
-            name: Build Docker image
-            command: |
-              docker build -t "$IMAGE_NAME" .
-        - run:
-            name: Upload docker image to dockerhub
-            command: |
-              docker tag $IMAGE_NAME $IMAGE_NAME:$CIRCLE_BUILD_NUM
-              echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
-              docker push $IMAGE_NAME
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            cd db
+            go get -v -t -d ./...
+            mkdir ".dist"
+            CGO_ENABLED=0 go build -v -o ".dist/generic-bank-db"
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t "$IMAGE_NAME" .
+      - run:
+          name: Upload docker image to dockerhub
+          command: |
+            docker tag $IMAGE_NAME $IMAGE_NAME:$CIRCLE_BUILD_NUM
+            echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
+            docker push $IMAGE_NAME
