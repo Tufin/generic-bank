@@ -13,6 +13,7 @@ commands:
       dockerfile:
         type: string
     steps:
+      - setup_remote_docker
       - run:
           name: Build docker image and push to registry
           command: |
