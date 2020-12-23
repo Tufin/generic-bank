@@ -17,14 +17,9 @@ commands:
       - run:
           name: Build docker image and push to registry
           command: |
-            dockerfile=<< parameters.dockerfile >>
-            if [[ -z "$dockerfile" ]];
-            then
-              dockerfile=Dockerfile
-            fi
-
-            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
             src="<< parameters.service >>"
+            docker build --build-arg SERVICE="${src}" -t "${src}" .
+            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
             target="tufinim/<< parameters.service >>"
             docker tag "${src}" "${target}"
             docker tag "${src}" "${target}:${CIRCLE_BRANCH}"
@@ -92,4 +87,3 @@ jobs:
     steps:
       - build_and_push:
           service: tufin-db
-          dockerfile: "Dockerfile"
