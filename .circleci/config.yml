@@ -89,6 +89,6 @@ jobs:
   db:
     executor: service_exec
     steps:
-      - build_service:
+      - build_and_push:
           service: tufin-db
           dockerfile: "Dockerfile"
