@@ -4,6 +4,32 @@ executors:
     working_directory: /go/src/github.com/tufin/generic-bank
     docker:
       - image: tufinim/circleci-go:master
+commands:
+  build_and_push:
+    description: "Build docker image and push to registry"
+    parameters:
+      service:
+        type: string
+      dockerfile:
+        type: string
+    steps:
+      - run:
+          name: Build docker image and push to registry
+          command: |
+            dockerfile=<< parameters.dockerfile >>
+            if [[ -z "$dockerfile" ]];
+            then
+              dockerfile=Dockerfile
+            fi
+
+            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
+            src="<< parameters.service >>"
+            target="tufinim/<< parameters.service >>"
+            docker tag "${src}" "${target}"
+            docker tag "${src}" "${target}:${CIRCLE_BRANCH}"
+            docker tag "${src}" "${target}:${CIRCLE_BUILD_NUM}"
+            docker tag "${src}" "${target}:${CIRCLE_BUILD_NUM}-${CIRCLE_BRANCH}"
+            docker push "${target}"
 jobs:
   build:
     executor: service_exec
@@ -62,25 +88,7 @@ jobs:
             DEPLOYMENT: admin
   db:
     executor: service_exec
-    environment:
-      IMAGE_NAME: tufinim/tufin-db
     steps:
-      - checkout
-      - run:
-          name: Build
-          command: |
-            cd db
-            go get -v -t -d ./...
-            mkdir ".dist"
-            CGO_ENABLED=0 go build -v -o ".dist/generic-bank-db"
-      - setup_remote_docker
-      - run:
-          name: Build Docker image
-          command: |
-            docker build -t "$IMAGE_NAME" .
-      - run:
-          name: Upload docker image to dockerhub
-          command: |
-            docker tag $IMAGE_NAME $IMAGE_NAME:$CIRCLE_BUILD_NUM
-            echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
-            docker push $IMAGE_NAME
+      - build_service:
+          service: tufin-db
+          dockerfile: "Dockerfile"
