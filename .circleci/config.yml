@@ -10,8 +10,6 @@ commands:
     parameters:
       service:
         type: string
-      dockerfile:
-        type: string
     steps:
       - setup_remote_docker
       - run:
