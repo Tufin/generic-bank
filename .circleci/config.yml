@@ -15,6 +15,7 @@ commands:
       - run:
           name: Build docker image and push to registry
           command: |
+            ls -la
             cd db
             src="<< parameters.service >>"
             docker build --build-arg SERVICE="${src}" -t "${src}" .
