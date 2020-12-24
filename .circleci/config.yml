@@ -15,9 +15,8 @@ commands:
       - run:
           name: Build docker image and push to registry
           command: |
-            cd db
             src="<< parameters.service >>"
-            docker build --build-arg SERVICE="${src}" -t "${src}" .
+            docker build --build-arg SERVICE="${src}" -t "${src}" -f Dockerfile.generic .
             echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
             target="tufinim/<< parameters.service >>"
             docker tag "${src}" "${target}"
