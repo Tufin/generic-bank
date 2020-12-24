@@ -258,9 +258,8 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(response.StatusCode)
 		return
 	}
+	log.Infof("account '%+v' added to redis", account)
 
-	msg := fmt.Sprintf("account '%+v' added to redis", account)
-	log.Infof(msg)
 	common.RespondWith(w, r, http.StatusCreated, account)
 }
 
