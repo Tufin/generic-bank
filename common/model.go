@@ -29,7 +29,7 @@ func NewAccount(account RequestAccount) *Account {
 
 	return &Account{
 		ID:       uuid.New(),
-		Name:     "",
-		LastName: "",
+		Name:     account.Name,
+		LastName: account.LastName,
 	}
 }
