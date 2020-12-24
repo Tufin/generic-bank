@@ -16,7 +16,6 @@ commands:
           name: Build docker image and push to registry
           command: |
             ls -la
-            cd db
             src="<< parameters.service >>"
             docker build --build-arg SERVICE="${src}" -t "${src}" .
             echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
@@ -85,5 +84,8 @@ jobs:
   db:
     executor: service_exec
     steps:
+      - checkout
+      - run:
+          command: cd db
       - build_and_push:
           service: tufin-db
