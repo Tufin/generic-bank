@@ -6,7 +6,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /boa/admin/accounts
+      - path: /admin/accounts
         backend:
           serviceName: admin
           servicePort: 80
@@ -18,7 +18,7 @@ spec:
         backend:
           serviceName: admin
           servicePort: 80
-      - path: /time
+      - path: /admin/time
         backend:
           serviceName: admin
           servicePort: 80
