@@ -1,13 +1,32 @@
-general:
-  branches:
-    ignore:
-      - world-trading-updates
-version: 2
-jobs:
-  build:
+version: 2.1
+executors:
+  service_exec:
     working_directory: /go/src/github.com/tufin/generic-bank
     docker:
       - image: tufinim/circleci-go:master
+commands:
+  build_and_push:
+    description: "Build docker image and push to registry"
+    parameters:
+      service:
+        type: string
+    steps:
+      - setup_remote_docker
+      - run:
+          name: Build docker image and push to registry
+          command: |
+            src="<< parameters.service >>"
+            docker build --build-arg SERVICE="${src}" -t "${src}" -f Dockerfile.generic .
+            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
+            target="tufinim/<< parameters.service >>"
+            docker tag "${src}" "${target}"
+            docker tag "${src}" "${target}:${CIRCLE_BRANCH}"
+            docker tag "${src}" "${target}:${CIRCLE_BUILD_NUM}"
+            docker tag "${src}" "${target}:${CIRCLE_BUILD_NUM}-${CIRCLE_BRANCH}"
+            docker push "${target}"
+jobs:
+  build:
+    executor: service_exec
     environment:
       IMAGE_NAME: tufinim/generic-bank
       TUFIN_DOMAIN: generic-bank
@@ -61,3 +80,9 @@ jobs:
             GCLOUD_CLUSTER_NAME: aut-generic-bank-retail
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: admin
+  db:
+    executor: service_exec
+    steps:
+      - checkout
+      - build_and_push:
+          service: tufin-db
