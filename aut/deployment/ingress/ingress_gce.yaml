@@ -34,7 +34,7 @@ spec:
         backend:
           serviceName: customer
           servicePort: 80
-      - path: /balance
+      - path: /customer/balance
         backend:
           serviceName: customer
           servicePort: 80
