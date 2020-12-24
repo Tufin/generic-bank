@@ -2,8 +2,8 @@
 FROM golang:1.15 as builder
 ARG SERVICE
 WORKDIR /app/$SERVICE
-COPY $SERVICE/go.mod $SERVICE/go.sum ./
-COPY common ../common/
+COPY go.mod go.sum ./
+COPY ../common ../common/
 
 # Download dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
