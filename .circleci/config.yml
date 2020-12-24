@@ -86,3 +86,9 @@ jobs:
       - checkout
       - build_and_push:
           service: tufin-db
+  auth-proxy:
+    executor: service_exec
+    steps:
+      - checkout
+      - build_and_push:
+          service: auth-proxy
