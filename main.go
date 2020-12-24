@@ -261,10 +261,7 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 
 	msg := fmt.Sprintf("account '%+v' added to redis", account)
 	log.Infof(msg)
-	w.WriteHeader(http.StatusCreated)
-	if _, err := fmt.Fprint(w, msg); err != nil {
-		log.Errorf("failed to stream response message '%s' with '%v'", msg, err)
-	}
+	common.RespondWith(w, r, http.StatusCreated, account)
 }
 
 func getBalanceAsCustomer(w http.ResponseWriter, _ *http.Request) {
