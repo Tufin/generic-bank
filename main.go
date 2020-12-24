@@ -230,14 +230,15 @@ func getPostgresAccountsUrl() string {
 
 func createAccount(w http.ResponseWriter, r *http.Request) {
 
-	var account common.RequestAccount
-	if err := json.NewDecoder(r.Body).Decode(&account); err != nil {
+	var requestAccount common.RequestAccount
+	if err := json.NewDecoder(r.Body).Decode(&requestAccount); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Infof("failed to unmarshal account request with '%v'", err)
 		return
 	}
 	defer common.CloseWithErrLog(r.Body)
 
+	account := common.NewAccount(requestAccount)
 	url := fmt.Sprintf("%s/accounts", redis)
 	log.Infof("adding account '%+v' to redis '%s'", account, url)
 	payload, err := json.Marshal(account)

@@ -6,6 +6,26 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func GetEnvSensitive(variable string) string {
+
+	ret := os.Getenv(variable)
+	if ret != "" {
+		log.Infof("'%s': [sensitive]", variable)
+	}
+
+	return ret
+}
+
+func GetEnvSensitiveOrExit(variable string) string {
+
+	ret := GetEnvSensitive(variable)
+	if ret == "" {
+		log.Fatalf("Please, set '%s'", variable)
+	}
+
+	return ret
+}
+
 func GetEnvOrExit(variable string) string {
 
 	ret := os.Getenv(variable)
