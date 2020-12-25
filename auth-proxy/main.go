@@ -26,7 +26,8 @@ func main() {
 		if auth.IsAuthenticate(r) {
 			proxy.ServeHTTP(w, r)
 		} else {
-			if _, err := w.Write([]byte("unauthenticated")); err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			if _, err := w.Write([]byte("Not Found :(")); err != nil {
 				log.Errorf("failed to stream response with '%v'", err)
 			}
 		}

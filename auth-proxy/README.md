@@ -13,5 +13,5 @@ TARGET_URL=http://localhost:3000
 AUTH0_DOMAIN=<get value from auth0>
 AUTH0_CLIENT_ID=<get value from auth0>
 AUTH0_CLIENT_SECRET=<get value from auth0>
-CALLBACK_URL=http://generic-bank/callback
+CALLBACK_URL=http://localhost:8080/callback
 ```
