@@ -3,20 +3,21 @@ package auth
 import (
 	"net/http"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/tufin/generic-bank/auth-proxy/app"
 )
 
-func IsAuthenticated(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+func IsAuthenticate(r *http.Request) bool {
 
 	session, err := app.Store.Get(r, "auth-session")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Errorf("failed to get auth session with '%v'", err)
+		return false
+	}
+	if _, ok := session.Values["profile"]; !ok {
+		//http.Redirect(w, r, "/", http.StatusSeeOther)
+		return false
 	}
 
-	if _, ok := session.Values["profile"]; !ok {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	} else {
-		next(w, r)
-	}
+	return true
 }

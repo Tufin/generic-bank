@@ -9,6 +9,7 @@ require (
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/pquerna/cachecontrol v0.0.0-20201205024021-ac21108117ac // indirect
+	github.com/sirupsen/logrus v1.7.0
 	github.com/tufin/generic-bank/common v0.0.0-20201224122121-3ba94a82a8ff
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect

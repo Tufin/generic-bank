@@ -1,6 +1,10 @@
 package main
 
 import (
+	"net/http"
+
+	log "github.com/sirupsen/logrus"
+
 	"github.com/gorilla/mux"
 	"github.com/tufin/generic-bank/auth-proxy/app"
 	"github.com/tufin/generic-bank/auth-proxy/auth"
@@ -18,7 +22,15 @@ func main() {
 	router.HandleFunc("/logout", auth.HandleLogout)
 
 	proxy := auth.CreateAuthProxy()
-	router.PathPrefix("/").HandlerFunc(proxy.ServeHTTP)
+	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if auth.IsAuthenticate(r) {
+			proxy.ServeHTTP(w, r)
+		} else {
+			if _, err := w.Write([]byte("unauthenticated")); err != nil {
+				log.Errorf("failed to stream response with '%v'", err)
+			}
+		}
+	})
 
 	common.Serve(router)
 }
