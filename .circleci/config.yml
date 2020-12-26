@@ -10,13 +10,15 @@ commands:
     parameters:
       service:
         type: string
+      dockerfile:
+        type: string
     steps:
       - setup_remote_docker
       - run:
           name: Build docker image and push to registry
           command: |
             src="<< parameters.service >>"
-            docker build --build-arg SERVICE="${src}" -t "${src}" -f Dockerfile.generic .
+            docker build --build-arg SERVICE="${src}" -t "${src}" -f << parameters.dockerfile >> .
             echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
             target="tufinim/<< parameters.service >>"
             docker tag "${src}" "${target}"
@@ -86,9 +88,18 @@ jobs:
       - checkout
       - build_and_push:
           service: tufin-db
+          dockerfile: "Dockerfile.generic"
   auth-proxy:
     executor: service_exec
     steps:
       - checkout
       - build_and_push:
           service: auth-proxy
+          dockerfile: "Dockerfile.generic"
+  reverse-proxy:
+    executor: service_exec
+    steps:
+      - checkout
+      - build_and_push:
+          service: reverse-proxy
+          dockerfile: "reverse-proxy/Dockerfile"
