@@ -69,3 +69,7 @@ curl -i -X POST \
 }' \
  'https://circleci.com/api/v1.1/project/github/Tufin/generic-bank/tree/master?circle-token=<token>'
 ```
+#### Docker build
+```
+docker build --build-arg SERVICE="${src}" -t "${src}" -f Dockerfile.generic .
+```

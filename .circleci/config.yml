@@ -82,7 +82,7 @@ jobs:
             GCLOUD_CLUSTER_NAME: aut-generic-bank-retail
             GCLOUD_ZONE: europe-west1-b
             DEPLOYMENT: admin
-  db:
+  tufin-db:
     executor: service_exec
     steps:
       - checkout
