@@ -11,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/tufin/generic-bank/common"
 	"github.com/tufin/generic-bank/db/manager"
+	sabik "github.com/tufin/sabik/client"
 )
 
 var dbManager *manager.DBManager
@@ -23,7 +24,7 @@ func main() {
 	dbManager = manager.NewDBManager()
 
 	router := mux.NewRouter()
-	middleware := common.CreateMiddleware("")
+	middleware := sabik.NewMiddleware()
 	router.Handle("/accounts", middleware.Handle(http.HandlerFunc(getAccounts))).Methods(http.MethodGet)
 	router.Handle("/accounts", middleware.Handle(http.HandlerFunc(addAccount))).Methods(http.MethodPost)
 	router.Handle("/accounts", middleware.Handle(http.HandlerFunc(getDeleteAccounts))).Methods(http.MethodDelete)
