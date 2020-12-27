@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -163,9 +162,7 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	var dbAccounts struct {
-		Accounts []string `json:"accounts"`
-	}
+	var dbAccounts common.AccountList
 	err = json.Unmarshal(body, &dbAccounts)
 	if err != nil {
 		log.Errorf("failed to unmarshal response body from postgres into accounts with '%v'", err)
@@ -173,7 +170,7 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 
-	accounts := getAccountWithSSN(dbAccounts.Accounts)
+	accounts := getAccountWithSSN(dbAccounts)
 	log.Info(accounts)
 
 	ret, err := json.Marshal(accounts)
@@ -194,17 +191,16 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 var ssnNumbers = []string{"206-04-5678", "248-95-3456", "349-02-1234", "130-96-4321",
 	"007-10-5678", "150-20-4321", "148-17-1234", "163-85-1234", "163-84-1234", "735-11-5678"}
 
-func getAccountWithSSN(dbAccounts []string) map[string][]common.SSNAccount {
+func getAccountWithSSN(dbAccounts common.AccountList) map[string][]common.SSNAccount {
 
 	count := len(ssnNumbers)
 	next := 0
 	var ret []common.SSNAccount
-	for i := 0; i < len(dbAccounts); i++ {
-		arr := strings.Split(dbAccounts[i], ":")
+	for i := 0; i < len(dbAccounts.Accounts); i++ {
 		ret = append(ret, common.SSNAccount{
-			Name:     arr[0],
-			Lastname: arr[1],
-			ID:       arr[2],
+			Name:     dbAccounts.Accounts[i].Name,
+			Lastname: dbAccounts.Accounts[i].LastName,
+			ID:       dbAccounts.Accounts[i].ID,
 			SSN:      ssnNumbers[next],
 		})
 		next++

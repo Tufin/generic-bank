@@ -19,6 +19,10 @@ type RequestAccount struct {
 	LastName string `json:"last_name"`
 }
 
+type AccountList struct {
+	Accounts []Account `json:"accounts"`
+}
+
 type Account struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`

@@ -15,10 +15,6 @@ import (
 	"github.com/tufin/generic-bank/common"
 )
 
-type AccountList struct {
-	Accounts []common.Account `json:"accounts"`
-}
-
 func main() {
 
 	stop := make(chan os.Signal)
@@ -42,7 +38,7 @@ func main() {
 			if err != nil {
 				log.Errorf("failed to fetch and delete accounts from redis with '%v'", err)
 			} else {
-				var list AccountList
+				var list common.AccountList
 				if err := json.Unmarshal(streamToBytes(response.Body), &list); err != nil {
 					log.Errorf("failed to unmarshal account list with '%v'", err)
 				} else {
@@ -71,7 +67,7 @@ func getSleepTime() time.Duration {
 	return ret
 }
 
-func insertAccounts(postgres string, list AccountList) error {
+func insertAccounts(postgres string, list common.AccountList) error {
 
 	for _, currAccount := range list.Accounts {
 		payload, err := json.Marshal(currAccount)
