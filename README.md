@@ -57,3 +57,15 @@ Get Time
 
 HTTP GET `/time?zone=Asia/Jerusalem`
 
+#### Run Build using CircleCI
+```
+curl -i -X POST \
+   -H "Content-Type:application/json" \
+   -d \
+'{
+  "build_parameters": {
+      "CIRCLE_JOB": "<service>"
+  }
+}' \
+ 'https://circleci.com/api/v1.1/project/github/Tufin/generic-bank/tree/master?circle-token=<token>'
+```
