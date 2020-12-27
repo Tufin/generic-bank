@@ -109,4 +109,4 @@ jobs:
       - checkout
       - build_and_push:
           service: indexer
-          dockerfile: "reverse-proxy/Dockerfile.generic"
+          dockerfile: "Dockerfile.generic"
