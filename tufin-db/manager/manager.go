@@ -9,7 +9,7 @@ import (
 )
 
 type DBManager struct {
-	data []common.Account
+	data common.AccountList
 }
 
 func NewDBManager() *DBManager {
@@ -17,7 +17,7 @@ func NewDBManager() *DBManager {
 	return &DBManager{}
 }
 
-func (dbm *DBManager) GetAccounts() []common.Account {
+func (dbm *DBManager) GetAccounts() common.AccountList {
 
 	log.Infof("getting DB accounts... '%+v'", dbm.data)
 	return dbm.data
@@ -26,7 +26,7 @@ func (dbm *DBManager) GetAccounts() []common.Account {
 func (dbm *DBManager) Clear() {
 
 	log.Infof("deleting DB accounts... '%+v'", dbm.data)
-	dbm.data = nil
+	dbm.data = common.AccountList{}
 }
 
 func (dbm *DBManager) AddAccount(account common.Account) error {
@@ -48,7 +48,7 @@ func (dbm *DBManager) AddAccount(account common.Account) error {
 	}
 
 	log.Infof("adding account... '%+v'", account)
-	dbm.data = append(dbm.data, account)
+	dbm.data.Accounts = append(dbm.data.Accounts, account)
 
 	return nil
 }
