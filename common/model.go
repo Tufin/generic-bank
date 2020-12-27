@@ -10,7 +10,7 @@ type Balance struct {
 type SSNAccount struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
-	Lastname string `json:"lastname"`
+	Lastname string `json:"last_name"`
 	SSN      string `json:"ssn"`
 }
 

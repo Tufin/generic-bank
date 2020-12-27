@@ -38,10 +38,10 @@ func TestDBManager_GetAccounts(t *testing.T) {
 	}))
 	accounts := dbManager.GetAccounts()
 
-	require.Len(t, accounts, 1)
-	require.Equal(t, id, accounts[0].ID)
-	require.Equal(t, name, accounts[0].Name)
-	require.Equal(t, lastname, accounts[0].LastName)
+	require.Len(t, accounts.Accounts, 1)
+	require.Equal(t, id, accounts.Accounts[0].ID)
+	require.Equal(t, name, accounts.Accounts[0].Name)
+	require.Equal(t, lastname, accounts.Accounts[0].LastName)
 }
 
 func TestDBManager_ClearAccounts(t *testing.T) {
@@ -55,14 +55,14 @@ func TestDBManager_ClearAccounts(t *testing.T) {
 		LastName: lastname,
 	}))
 
-	require.Len(t, dbManager.GetAccounts(), 1)
+	require.Len(t, dbManager.GetAccounts().Accounts, 1)
 	dbManager.Clear()
-	require.Len(t, dbManager.GetAccounts(), 0)
+	require.Len(t, dbManager.GetAccounts().Accounts, 0)
 
 	require.NoError(t, dbManager.AddAccount(common.Account{
 		ID:       "2",
 		Name:     name,
 		LastName: lastname,
 	}))
-	require.Len(t, dbManager.GetAccounts(), 1)
+	require.Len(t, dbManager.GetAccounts().Accounts, 1)
 }
