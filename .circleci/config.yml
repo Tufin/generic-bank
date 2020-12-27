@@ -103,3 +103,10 @@ jobs:
       - build_and_push:
           service: reverse-proxy
           dockerfile: "reverse-proxy/Dockerfile"
+  indexer:
+    executor: service_exec
+    steps:
+      - checkout
+      - build_and_push:
+          service: indexer
+          dockerfile: "reverse-proxy/Dockerfile"
