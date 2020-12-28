@@ -3,12 +3,13 @@ package auth
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
-
-	"github.com/tufin/generic-bank/common"
 
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/tufin/generic-bank/auth-proxy/app"
+	"github.com/tufin/generic-bank/common"
 )
 
 type Jwks struct {
@@ -56,7 +57,7 @@ func CreateJWTMiddleware() *jwtmiddleware.JWTMiddleware {
 func getPemCert(token *jwt.Token) (string, error) {
 
 	cert := ""
-	resp, err := http.Get("https://YOUR_DOMAIN/.well-known/jwks.json")
+	resp, err := http.Get(fmt.Sprintf("https://%s/.well-known/jwks.json", app.Domain))
 
 	if err != nil {
 		return cert, err
