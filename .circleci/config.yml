@@ -55,7 +55,7 @@ jobs:
           command: |
             src=generic-bank
             target=tufinim/generic-bank
-            docker build -t "${target}" .
+            docker build -t "${src}" .
             docker tag "${src}" "${target}"
             docker tag "${src}" "${target}:${CIRCLE_BRANCH}"
             echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
