@@ -48,12 +48,12 @@ func main() {
 
 func getAccounts(w http.ResponseWriter, r *http.Request) {
 
-	common.RespondWith(w, r, http.StatusOK, map[string]interface{}{"accounts": dbManager.GetAccounts()})
+	common.RespondWith(w, r, http.StatusOK, dbManager.GetAccounts())
 }
 
 func getDeleteAccounts(w http.ResponseWriter, r *http.Request) {
 
-	common.RespondWith(w, r, http.StatusOK, map[string]interface{}{"accounts": dbManager.GetAccounts()})
+	common.RespondWith(w, r, http.StatusOK, dbManager.GetAccounts())
 	dbManager.Clear()
 }
 
