@@ -57,9 +57,12 @@ jobs:
       - run:
           name: Upload docker image to dockerhub
           command: |
-            docker tag $IMAGE_NAME $IMAGE_NAME:$CIRCLE_BUILD_NUM
+            src=generic-bank
+            target=tufinim/generic-bank
+            docker tag "${src}" "${target}"
+            docker tag "${src}" "${target}:${CIRCLE_BRANCH}"
             echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
-            docker push $IMAGE_NAME
+            docker push "${target}"
       - run:
           name: Tufin image analysis
           command: |
