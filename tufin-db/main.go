@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"github.com/tufin/generic-bank/common"
-	"github.com/tufin/generic-bank/db/manager"
+	"github.com/tufin/generic-bank/tufin-db/manager"
 	sabik "github.com/tufin/sabik/client"
 )
 
@@ -24,7 +24,7 @@ func main() {
 	dbManager = manager.NewDBManager()
 
 	router := mux.NewRouter()
-	middleware := sabik.NewMiddleware()
+	middleware := sabik.CreateMiddleware()
 	router.Handle("/accounts", middleware.Handle(http.HandlerFunc(getAccounts))).Methods(http.MethodGet)
 	router.Handle("/accounts", middleware.Handle(http.HandlerFunc(addAccount))).Methods(http.MethodPost)
 	router.Handle("/accounts", middleware.Handle(http.HandlerFunc(getDeleteAccounts))).Methods(http.MethodDelete)

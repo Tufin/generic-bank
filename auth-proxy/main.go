@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	// common.Auth0()
+	common.Auth0()
 	app.Init()
 
 	router := mux.NewRouter()

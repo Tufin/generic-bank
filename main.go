@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"github.com/tufin/generic-bank/common"
+	sabik "github.com/tufin/sabik/client"
 )
 
 var (
@@ -31,7 +32,10 @@ func main() {
 	mode := common.GetEnvOrExit("MODE")
 
 	router := mux.NewRouter()
-	middleware := common.CreateMiddleware(mode)
+	if err := os.Setenv(sabik.EnvKeyServiceName, mode); err != nil {
+		log.Fatalf("faile to set environment variable with '%v'", err)
+	}
+	middleware := sabik.CreateMiddleware()
 
 	if mode == "admin" {
 		router.Handle("/admin/accounts", middleware.Handle(http.HandlerFunc(getAccounts))).Methods(http.MethodGet)
@@ -271,7 +275,9 @@ func getBalanceAsCustomer(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 		} else {
 			log.Infof("Customer balance: '%s'", string(body))
-			w.Write(body)
+			if _, err := w.Write(body); err != nil {
+				log.Errorf("failed to write response with '%v'", err)
+			}
 		}
 	}
 }
@@ -306,10 +312,12 @@ func getRandomBalance(w http.ResponseWriter, _ *http.Request) {
 	}
 	log.Infof("Random balance: '%+v'", ret)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"balance": ret,
 		"cards":   []string{"4485281688960105", "4532343129620269", "4716106401131630485"},
-	})
+	}); err != nil {
+		log.Errorf("failed to write response with '%v'", err)
+	}
 }
 
 func random(min, max int) int {

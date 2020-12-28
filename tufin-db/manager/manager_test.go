@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/tufin/generic-bank/common"
-	"github.com/tufin/generic-bank/db/manager"
+	"github.com/tufin/generic-bank/tufin-db/manager"
 )
 
 func TestDBManager_AddAccount_EmptyID(t *testing.T) {
