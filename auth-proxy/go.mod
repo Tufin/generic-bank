@@ -3,7 +3,9 @@ module github.com/tufin/generic-bank/auth-proxy
 go 1.15
 
 require (
+	github.com/auth0/go-jwt-middleware v0.0.0-20201030150249-d783b5c46b39
 	github.com/coreos/go-oidc v2.2.1+incompatible
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/sessions v1.2.1
 	github.com/onsi/ginkgo v1.14.2 // indirect
