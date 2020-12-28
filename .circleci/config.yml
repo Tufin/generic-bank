@@ -19,12 +19,12 @@ commands:
           command: |
             src="<< parameters.service >>"
             docker build --build-arg SERVICE="${src}" -t "${src}" -f << parameters.dockerfile >> .
-            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
             target="tufinim/<< parameters.service >>"
             docker tag "${src}" "${target}"
             docker tag "${src}" "${target}:${CIRCLE_BRANCH}"
             docker tag "${src}" "${target}:${CIRCLE_BUILD_NUM}"
             docker tag "${src}" "${target}:${CIRCLE_BUILD_NUM}-${CIRCLE_BRANCH}"
+            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
             docker push "${target}"
 jobs:
   build:
@@ -51,14 +51,11 @@ jobs:
             CGO_ENABLED=0 go build -v -o ".dist/generic-bank"
       - setup_remote_docker
       - run:
-          name: Build Docker image
-          command: |
-            docker build -t "$IMAGE_NAME" .
-      - run:
           name: Upload docker image to dockerhub
           command: |
             src=generic-bank
             target=tufinim/generic-bank
+            docker build -t "${target}" .
             docker tag "${src}" "${target}"
             docker tag "${src}" "${target}:${CIRCLE_BRANCH}"
             echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
