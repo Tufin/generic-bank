@@ -20,8 +20,9 @@ func main() {
 	router.HandleFunc("/callback", auth.HandleCallback)
 	router.HandleFunc("/login", auth.HandleLogin)
 	router.HandleFunc("/logout", auth.HandleLogout)
+	router.HandleFunc("/user", auth.UserHandler)
 
-	jwtMiddleware := auth.CreateJWTMiddleware()
+	//jwtMiddleware := auth.CreateJWTMiddleware()
 	proxy := auth.CreateAuthProxy()
 	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !auth.IsAuthenticate(r) {
@@ -32,13 +33,13 @@ func main() {
 			return
 		}
 
-		if err := jwtMiddleware.CheckJWT(w, r); err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			if _, err := w.Write([]byte("Unauthorized :(")); err != nil {
-				log.Errorf("failed to stream response with '%v'", err)
-			}
-			return
-		}
+		//if err := jwtMiddleware.CheckJWT(w, r); err != nil {
+		//	w.WriteHeader(http.StatusUnauthorized)
+		//	if _, err := w.Write([]byte("Unauthorized :(")); err != nil {
+		//		log.Errorf("failed to stream response with '%v'", err)
+		//	}
+		//	return
+		//}
 
 		proxy.ServeHTTP(w, r)
 	})

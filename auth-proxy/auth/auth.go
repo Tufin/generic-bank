@@ -30,7 +30,7 @@ func NewAuthenticator() (*Authenticator, error) {
 		ClientSecret: app.ClientSecret,
 		RedirectURL:  app.CallbackURL,
 		Endpoint:     provider.Endpoint(),
-		Scopes:       []string{oidc.ScopeOpenID, "profile"},
+		Scopes:       []string{oidc.ScopeOpenID, "profile read:accounts email"},
 	}
 
 	return &Authenticator{

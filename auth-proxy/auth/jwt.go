@@ -8,6 +8,7 @@ import (
 
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
+	log "github.com/sirupsen/logrus"
 	"github.com/tufin/generic-bank/auth-proxy/app"
 	"github.com/tufin/generic-bank/common"
 )
@@ -30,13 +31,14 @@ func CreateJWTMiddleware() *jwtmiddleware.JWTMiddleware {
 	return jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 			// Verify 'aud' claim
-			const aud = "http://localhost"
+			//const aud = "http://localhost"
+			const aud = "http://localhost:8080/admin/accounts"
 			checkAud := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAud {
 				return token, errors.New("invalid audience")
 			}
 			// Verify 'iss' claim
-			const iss = "http://localhost"
+			const iss = "http://localhost:8080/admin/accounts"
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
 			if !checkIss {
 				return token, errors.New("invalid issuer")
@@ -47,7 +49,12 @@ func CreateJWTMiddleware() *jwtmiddleware.JWTMiddleware {
 				panic(err.Error())
 			}
 
-			result, _ := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
+			result, err := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
+			if err != nil {
+				log.Errorf("failed to parse RSA key with '%v'", err)
+				return nil, err
+			}
+
 			return result, nil
 		},
 		SigningMethod: jwt.SigningMethodRS256,

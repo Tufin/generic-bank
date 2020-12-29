@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tufin/generic-bank/auth-proxy/app"
+	"golang.org/x/oauth2"
 )
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -37,5 +38,5 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, authenticator.Config.AuthCodeURL(state), http.StatusTemporaryRedirect)
+	http.Redirect(w, r, authenticator.Config.AuthCodeURL(state, oauth2.SetAuthURLParam("audience", "http://localhost:8080/admin/accounts")), http.StatusTemporaryRedirect)
 }
