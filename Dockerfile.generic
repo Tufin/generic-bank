@@ -11,7 +11,7 @@ COPY $SERVICE .
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -o main
 
 ### Create image ###
-FROM alpine:3.1
+FROM alpine:3.6
 ARG SERVICE
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
