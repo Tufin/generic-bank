@@ -1,4 +1,3 @@
-### Go get dependecies and build ###
 FROM golang:1.15 as builder
 ARG SERVICE
 WORKDIR /app/$SERVICE
@@ -11,9 +10,9 @@ COPY $SERVICE .
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -o main
 
 ### Create image ###
-FROM alpine:3.1
+# FROM alpine:3.6
+FROM ubuntu:trusty-20161101
 ARG SERVICE
-RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /app/$SERVICE/main .
 EXPOSE 8088
