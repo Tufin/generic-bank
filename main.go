@@ -38,7 +38,7 @@ func main() {
 	middleware := sabik.CreateMiddleware()
 
 	if mode == "admin" {
-		router.Handle("/admin/accounts", middleware.Handle(http.HandlerFunc(getAccounts))).Methods(http.MethodGet)
+		router.Handle("/admin/accounts", middleware.Handle(http.HandlerFunc(handleGetAccounts))).Methods(http.MethodGet)
 		router.Handle("/admin/time", middleware.Handle(http.HandlerFunc(getTime))).Methods(http.MethodGet)
 		router.PathPrefix("/admin/").Handler(angularRouteHandler("/admin", getAngularAssets("/boa/html/")))
 	} else if mode == "balance" {
@@ -142,7 +142,7 @@ func getTimeServiceUrl(zone string) string {
 	return ret
 }
 
-func getAccounts(w http.ResponseWriter, _ *http.Request) {
+func handleGetAccounts(w http.ResponseWriter, r *http.Request) {
 
 	postgres := getPostgresAccountsUrl()
 
@@ -174,46 +174,87 @@ func getAccounts(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 
-	accounts := getAccountWithSSN(dbAccounts)
+	accounts := getAccounts(dbAccounts, r.FormValue("mode"))
 	log.Info(accounts)
 
 	ret, err := json.Marshal(accounts)
 	if err != nil {
-		log.Errorf("failed to marshal SSN accounts with '%v'", err)
+		log.Errorf("failed to marshal accounts with '%v'", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	_, err = w.Write(ret)
 	if err != nil {
-		log.Errorf("failed to write SSN accounts response with '%v'", err)
+		log.Errorf("failed to write accounts response with '%v'", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
 
-var ssnNumbers = []string{"206-04-5678", "248-95-3456", "349-02-1234", "130-96-4321",
-	"007-10-5678", "150-20-4321", "148-17-1234", "163-85-1234", "163-84-1234", "735-11-5678"}
+func getAccounts(dbAccounts common.AccountList, mode string) map[string][]map[string]string {
 
-func getAccountWithSSN(dbAccounts common.AccountList) map[string][]common.SSNAccount {
+	if mode == "compact" {
+		return getAccountsWithoutCreditCards(dbAccounts)
+	}
 
-	count := len(ssnNumbers)
+	return getAccountsWithCreditCards(dbAccounts)
+}
+
+func getAccountsWithoutCreditCards(accounts common.AccountList) map[string][]map[string]string {
+
+	var ret []map[string]string
+	for _, currAccount := range accounts.Accounts {
+		ret = append(ret, accountToMap(currAccount))
+	}
+
+	return map[string][]map[string]string{"accounts": ret}
+}
+
+func accountToMap(account common.Account) map[string]string {
+
+	return map[string]string{
+		"id":        account.ID,
+		"name":      account.Name,
+		"last_name": account.LastName,
+	}
+}
+
+var creditCards = []string{"4485281688960105", "4532343129620269", "4485 2816 8896 0105",
+	"4485-2816-8896-0105", "6011128940161477", "6011241861038622", "30014800829892",
+	"30507075123768", "30450567425005", "2720993263757610", "2221006966003549",
+	"2720995880263559", "378373260929703",
+}
+
+func getAccountsWithCreditCards(dbAccounts common.AccountList) map[string][]map[string]string {
+
+	count := len(creditCards)
 	next := 0
-	var ret []common.SSNAccount
+	var ret []map[string]string
 	for i := 0; i < len(dbAccounts.Accounts); i++ {
-		ret = append(ret, common.SSNAccount{
-			Name:     dbAccounts.Accounts[i].Name,
-			Lastname: dbAccounts.Accounts[i].LastName,
-			ID:       dbAccounts.Accounts[i].ID,
-			SSN:      ssnNumbers[next],
-		})
+		ret = append(ret, accountWithCreditCardToMap(common.CreditCardAccount{
+			Name:       dbAccounts.Accounts[i].Name,
+			LastName:   dbAccounts.Accounts[i].LastName,
+			ID:         dbAccounts.Accounts[i].ID,
+			CreditCard: creditCards[next],
+		}))
 		next++
 		if next == count {
 			next = 0
 		}
 	}
 
-	return map[string][]common.SSNAccount{"accounts": ret}
+	return map[string][]map[string]string{"accounts": ret}
+}
+
+func accountWithCreditCardToMap(account common.CreditCardAccount) map[string]string {
+
+	return map[string]string{
+		"id":          account.ID,
+		"name":        account.Name,
+		"last_name":   account.LastName,
+		"credit_card": account.CreditCard,
+	}
 }
 
 func getPostgresAccountsUrl() string {

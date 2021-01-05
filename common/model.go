@@ -7,11 +7,17 @@ type Balance struct {
 	Amount int    `json:"amount" form:"amount" binding:"required"`
 }
 
-type SSNAccount struct {
+type CreditCardAccount struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	LastName   string `json:"last_name"`
+	CreditCard string `json:"credit_card"`
+}
+
+type Account struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
-	Lastname string `json:"last_name"`
-	SSN      string `json:"ssn"`
+	LastName string `json:"last_name"`
 }
 
 type RequestAccount struct {
@@ -21,12 +27,6 @@ type RequestAccount struct {
 
 type AccountList struct {
 	Accounts []Account `json:"accounts"`
-}
-
-type Account struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	LastName string `json:"last_name"`
 }
 
 func NewAccount(account RequestAccount) *Account {
