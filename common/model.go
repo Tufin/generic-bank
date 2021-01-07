@@ -7,6 +7,11 @@ type Balance struct {
 	Amount int    `json:"amount" form:"amount" binding:"required"`
 }
 
+type BalanceResponse struct {
+	Balance    []Balance `json:"balance"`
+	CreditCard string    `json:"credit_card"`
+}
+
 type CreditCardAccount struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`

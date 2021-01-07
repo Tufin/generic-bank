@@ -337,7 +337,7 @@ func getBalanceURL() string {
 
 func getRandomBalance(w http.ResponseWriter, _ *http.Request) {
 
-	ret := []common.Balance{
+	ret := common.BalanceResponse{Balance: []common.Balance{
 		{
 			Label:  "Savings",
 			Amount: random(0, 150000),
@@ -350,13 +350,10 @@ func getRandomBalance(w http.ResponseWriter, _ *http.Request) {
 			Label:  "Checking",
 			Amount: random(-15000, 150000),
 		},
-	}
+	}, CreditCard: "4485281688960105"}
 	log.Infof("Random balance: '%+v'", ret)
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(map[string]interface{}{
-		"balance": ret,
-		"cards":   []string{"4485281688960105", "4532343129620269", "4716106401131630485"},
-	}); err != nil {
+	w.Header().Set(common.HeaderContentType, common.ContentTypeApplicationJSON)
+	if err := json.NewEncoder(w).Encode(ret); err != nil {
 		log.Errorf("failed to write response with '%v'", err)
 	}
 }
